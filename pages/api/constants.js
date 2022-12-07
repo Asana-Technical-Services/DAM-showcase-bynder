@@ -3,6 +3,12 @@
  */
 const asanaKey = process.env.ASANA_TOKEN;
 
+// Base URL for Vercel App
+const vercelUrl = process.env.VERCEL_URL;
+
+// Base URL for Asana API
+const asanaApiUrl = process.env.ASANA_API_URL;
+
 // Asana API request header
 const asanaRequestHeaders = {
   Authorization: `Bearer ${asanaKey}`,
@@ -10,4 +16,6 @@ const asanaRequestHeaders = {
   Cookie: 'TooBusyRedirectCount=0',
 };
 
+module.exports = vercelUrl;
+module.exports = asanaApiUrl;
 module.exports = asanaRequestHeaders;

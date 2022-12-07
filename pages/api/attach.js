@@ -2,6 +2,8 @@
  * API for the AppComponent attachment function.
  * Returns an asset url for the desired asset ID.
  */
+const constants = require('./constants');
+
 /**
  * TODO: if preferred, return final url provided by DAM for specific asset ID
  */
@@ -19,7 +21,7 @@ const handler = (req, res) => {
   // Return resource
   const resource = {
     resource_name: item,
-    resource_url: `https://dam-showcase.vercel.app/dam/asset/${item}`,
+    resource_url: `${constants.vercelUrl}/dam/asset/${item}`,
   };
   res.status(200).json(resource);
 };

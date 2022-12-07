@@ -3,7 +3,7 @@
  * API for the AppComponent modal form submit action.
  */
 const axios = require('axios');
-const asanaRequestHeaders = require('../constants');
+const constants = require('../constants');
 
 const PROJECT_DAM_ASSETS_REVIEW = process.env.ASANA_PROJECT_DAM_ASSETS_REVIEW;
 const PROJECT_DAM_ASSETS_REVIEW_CF_TEAM = process.env.ASANA_PROJECT_DAM_ASSETS_REVIEW_CF_TEAM;
@@ -31,8 +31,8 @@ const handler = async (req, res) => {
   }
 
   // Fetch attachment data from Asana for selected attachment ID
-  const attachmentData = await axios.get(`https://app.asana.com/api/1.0/attachments/${fileID}`, {
-    headers: asanaRequestHeaders,
+  const attachmentData = await axios.get(`${constants.asanaApiUrl}/attachments/${fileID}`, {
+    headers: constants.asanaRequestHeaders,
   });
   if (!attachmentData) {
     res.status(200).json({
@@ -46,37 +46,37 @@ const handler = async (req, res) => {
 
   if (taskData && taskData.resource_type === 'task') {
     // Update task: set as approval task
-    await axios.put(`https://app.asana.com/api/1.0/tasks/${taskData.gid}`, {
+    await axios.put(`${constants.asanaApiUrl}/tasks/${taskData.gid}`, {
       data: {
         resource_subtype: 'approval',
       },
     }, {
-      headers: asanaRequestHeaders,
+      headers: constants.asanaRequestHeaders,
     });
     // Update task: add task to project "DAM Assets Review"
-    await axios.post(`https://app.asana.com/api/1.0/tasks/${taskData.gid}/addProject`, {
+    await axios.post(`${constants.asanaApiUrl}/tasks/${taskData.gid}/addProject`, {
       data: {
         project: PROJECT_DAM_ASSETS_REVIEW,
       },
     }, {
-      headers: asanaRequestHeaders,
+      headers: constants.asanaRequestHeaders,
     }).catch((err) => {
       console.log(err);
     });
     // Update task: fill team custom field
     const customFields = {};
     customFields[PROJECT_DAM_ASSETS_REVIEW_CF_TEAM] = teamID;
-    await axios.put(`https://app.asana.com/api/1.0/tasks/${taskData.gid}`, {
+    await axios.put(`${constants.asanaApiUrl}/tasks/${taskData.gid}`, {
       data: {
         custom_fields: customFields,
       },
     }, {
-      headers: asanaRequestHeaders,
+      headers: constants.asanaRequestHeaders,
     });
     // Return resource to App Component
     res.status(200).json({
       resource_name: '1236',
-      resource_url: 'https://dam-showcase.vercel.app/dam/asset/1236',
+      resource_url: `${constants.vercelUrl}/dam/asset/1236`,
     });
   } else {
     res.status(200).json({

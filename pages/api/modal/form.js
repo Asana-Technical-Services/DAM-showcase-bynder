@@ -5,7 +5,7 @@
  * Retrieves the existing attachments for the Asana Task
  */
 const axios = require('axios');
-const asanaRequestHeaders = require('../constants');
+const constants = require('../constants');
 
 const PROJECT_DAM_ASSETS_REVIEW_CF_TEAM_MARKETING = process.env.ASANA_PROJECT_DAM_ASSETS_REVIEW_CF_TEAM_MARKETING;
 const PROJECT_DAM_ASSETS_REVIEW_CF_TEAM_SALES = process.env.ASANA_PROJECT_DAM_ASSETS_REVIEW_CF_TEAM_SALES;
@@ -24,11 +24,11 @@ const handler = (req, res) => {
 
   // Get available attachments for the desired task
   Promise((resolve, reject) => {
-    axios.get('https://app.asana.com/api/1.0/attachments', {
+    axios.get(`${constants.asanaApiUrl}/attachments`, {
       params: {
         parent: taskID,
       },
-      headers: asanaRequestHeaders,
+      headers: constants.asanaRequestHeaders,
     }).then((taskResult) => {
       const attachments = taskResult.data;
 
@@ -46,7 +46,7 @@ const handler = (req, res) => {
         template: 'form_metadata_v0',
         metadata: {
           title: 'Review new file',
-          on_submit_callback: 'https://dam-showcase.vercel.app/api/modal/submit',
+          on_submit_callback: `${constants.vercelUrl}/api/modal/submit`,
           submit_button_text: 'Submit',
           fields: [
             {
