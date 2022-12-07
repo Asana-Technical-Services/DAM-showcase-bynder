@@ -1,8 +1,9 @@
+/* eslint-disable no-console */
 /**
  * API for the AppComponent modal form submit action.
  */
-import axios from 'axios';
-import { asanaRequestHeaders } from '../constants';
+const axios = require('axios');
+const asanaRequestHeaders = require('../constants');
 
 const PROJECT_DAM_ASSETS_REVIEW = process.env.ASANA_PROJECT_DAM_ASSETS_REVIEW;
 const PROJECT_DAM_ASSETS_REVIEW_CF_TEAM = process.env.ASANA_PROJECT_DAM_ASSETS_REVIEW_CF_TEAM;
@@ -32,7 +33,7 @@ const handler = async (req, res) => {
   // Fetch attachment data from Asana for selected attachment ID
   const attachmentData = await axios.get(`https://app.asana.com/api/1.0/attachments/${fileID}`, {
     headers: asanaRequestHeaders,
-  }).then((data) => data.data).catch((err) => null);
+  });
   if (!attachmentData) {
     res.status(200).json({
       error: 'No attachment found',
@@ -59,8 +60,6 @@ const handler = async (req, res) => {
       },
     }, {
       headers: asanaRequestHeaders,
-    }).then((r) => {
-      // console.log(r)
     }).catch((err) => {
       console.log(err);
     });

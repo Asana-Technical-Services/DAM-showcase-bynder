@@ -4,8 +4,8 @@
  * API for the AppComponent modal form dropdown field.
  * Retrieves the existing attachments for the Asana Task
  */
-import axios from 'axios';
-import { asanaRequestHeaders } from '../constants';
+const axios = require('axios');
+const asanaRequestHeaders = require('../constants');
 
 const PROJECT_DAM_ASSETS_REVIEW_CF_TEAM_MARKETING = process.env.ASANA_PROJECT_DAM_ASSETS_REVIEW_CF_TEAM_MARKETING;
 const PROJECT_DAM_ASSETS_REVIEW_CF_TEAM_SALES = process.env.ASANA_PROJECT_DAM_ASSETS_REVIEW_CF_TEAM_SALES;
@@ -23,7 +23,7 @@ const handler = (req, res) => {
   }
 
   // Get available attachments for the desired task
-  const promise = new Promise((resolve, reject) => {
+  Promise((resolve, reject) => {
     axios.get('https://app.asana.com/api/1.0/attachments', {
       params: {
         parent: taskID,
@@ -105,8 +105,6 @@ const handler = (req, res) => {
       reject(error);
     });
   });
-
-  return promise;
 };
 
 module.exports = handler;
