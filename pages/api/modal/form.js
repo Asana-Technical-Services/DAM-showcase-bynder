@@ -88,7 +88,7 @@ async function getAttachmentsForTask(taskGid) {
     },
   };
   return form;
-};
+}
 
 const handler = async (req, res) => {
   // Check query and return if task GID not found
