@@ -55,7 +55,7 @@ const handler = async (req, res) => {
     metadata: {
       title: 'Review new file',
       // on_submit_callback: `${constants.vercelUrl}/api/modal/submit`,
-      on_submit_callback: 'https://dam-showcase-andrew-git-dam-showcase-update-andrew-asana.vercel.app/api/modal/submit',
+      on_submit_callback: `h${constants.vercelUrl}/api/modal/submit`,
       submit_button_text: 'Submit',
       fields: [
         {
