@@ -20,4 +20,4 @@ module.exports = {
   vercelUrl,
   asanaApiUrl,
   asanaRequestHeaders,
-}
+};

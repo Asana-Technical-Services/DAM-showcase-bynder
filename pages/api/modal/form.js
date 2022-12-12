@@ -29,6 +29,26 @@ async function getAttachmentsForTask(taskGid) {
     });
   });
 
+  return files;
+}
+
+const handler = async (req, res) => {
+  // Check query and return if task GID not found
+  const { query } = req;
+  const taskID = query.task;
+  if (!taskID) {
+    res.status(200).json({
+      // "error": "No resource matched that input",
+    });
+    return;
+  }
+
+  // Get available attachments for the desired task
+  const files = await getAttachmentsForTask(taskID).catch((error) => {
+    console.log(error);
+    throw new Error(error);
+  });
+
   // Create AppComponent form metadata
   const form = {
     template: 'form_metadata_v0',
@@ -68,6 +88,7 @@ async function getAttachmentsForTask(taskGid) {
           id: 'dropdown_half_width_2',
           name: 'Team for review',
           is_required: true,
+          // TODO: Implement dynamic pull of teams for custom field
           options: [
             {
               id: PROJECT_DAM_ASSETS_REVIEW_CF_TEAM_MARKETING,
@@ -87,25 +108,6 @@ async function getAttachmentsForTask(taskGid) {
       ],
     },
   };
-  return form;
-}
-
-const handler = async (req, res) => {
-  // Check query and return if task GID not found
-  const { query } = req;
-  const taskID = query.task;
-  if (!taskID) {
-    res.status(200).json({
-      // "error": "No resource matched that input",
-    });
-    return;
-  }
-
-  // Get available attachments for the desired task
-  const form = await getAttachmentsForTask(taskID).catch((error) => {
-    console.log(error);
-    throw new Error(error);
-  });
 
   res.status(200).json(form);
 };
