@@ -42,7 +42,7 @@ const handler = async (req, res) => {
     return;
   }
 
-  console.log(`Got attachment data as: ${attachmentData}`);
+  console.log(`Got attachment data as: ${JSON.stringify(attachmentData)}`);
 
   // Extract parent task
   const taskData = attachmentData.data && attachmentData.data.parent;
