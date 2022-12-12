@@ -18,7 +18,7 @@ async function getAttachmentsForTask(taskGid) {
     },
     headers: constants.asanaRequestHeaders,
   });
-  const attachments = taskResult.data;
+  const attachments = taskResult && taskResult.data;
 
   // Retrieve file id and title
   const files = [];

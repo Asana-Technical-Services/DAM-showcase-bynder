@@ -16,6 +16,8 @@ const asanaRequestHeaders = {
   Cookie: 'TooBusyRedirectCount=0',
 };
 
-module.exports = vercelUrl;
-module.exports = asanaApiUrl;
-module.exports = asanaRequestHeaders;
+module.exports = {
+  vercelUrl,
+  asanaApiUrl,
+  asanaRequestHeaders,
+}
