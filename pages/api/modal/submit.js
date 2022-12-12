@@ -45,7 +45,6 @@ const handler = async (req, res) => {
   // Extract parent task
   const taskData = attachmentData.data && attachmentData.data.parent;
   console.log(`Got taskData data as: ${taskData}`);
-  console.log(`Got task resource type as: ${taskData.resource_type}`);
 
   if (taskData && taskData.resource_type === 'task') {
     // Update task: set as approval task
