@@ -26,18 +26,13 @@ async function convertAssetsToList(assets) {
   */
 
 const handler = async (req, res) => {
-  // const lookupKey = req && req.body && req.body.query;
   const { query } = req;
   const lookupKey = query && query.query;
 
-  console.log(lookupKey);
-  
   // Retrieve the list of asset results based on the search query
   const lookupData = await axios.get(`${constants.bynderApiUrl}/v4/media?keyword=${lookupKey}`, {
     headers: constants.bynderRequestHeaders,
   });
-
-  console.log(`Got lookupData as: ${lookupData}`);
 
   if (!lookupData) {
     res.status(200).json({
@@ -47,7 +42,7 @@ const handler = async (req, res) => {
   }
 
   // Convert the Bynder assets list to the Asana items list
-  const assetsList = convertAssetsToList(lookupData);
+  const assetsList = await convertAssetsToList(lookupData);
   res.status(200).json(assetsList);
 };
 
