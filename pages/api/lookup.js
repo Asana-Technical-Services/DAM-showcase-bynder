@@ -35,7 +35,7 @@ const handler = async (req, res) => {
     headers: constants.bynderRequestHeaders,
   });
 
-  console.log(`Got lookupData as: ${JSON.stringify(lookupData)}`);
+  console.log(`Got lookupData as: ${lookupData}`);
 
   if (!lookupData) {
     res.status(200).json({
