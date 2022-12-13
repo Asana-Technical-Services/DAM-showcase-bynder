@@ -31,7 +31,6 @@ const handler = async (req, res) => {
   }
 
   // Fetch attachment data from Asana for selected attachment ID
-  console.log(`Planning to make a request at: ${constants.asanaApiUrl}/attachments/${fileID}`);
   const attachmentData = await axios.get(`${constants.asanaApiUrl}/attachments/${fileID}`, {
     headers: constants.asanaRequestHeaders,
   });
@@ -46,8 +45,6 @@ const handler = async (req, res) => {
   const taskData = attachmentData.data
     && attachmentData.data.data
     && attachmentData.data.data.parent;
-  console.log(`Got taskData data as: ${taskData}`);
-  console.log(`Got attachment data as: ${JSON.stringify(attachmentData.data.data)}`);
 
   if (taskData && taskData.resource_type === 'task') {
     // Update task: set as approval task

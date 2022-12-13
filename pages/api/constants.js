@@ -1,7 +1,14 @@
 /**
  * Constants file
  */
+// Asana token for API requests
 const asanaKey = process.env.ASANA_TOKEN;
+
+// Bynder token for API requests
+const bynderKey = process.env.BYNDER_TOKEN;
+
+// Base URL for Bynder API
+const bynderApiUrl = process.env.BYNDER_API_URL;
 
 // Base URL for Vercel App
 const vercelUrl = process.env.VERCEL_URL;
@@ -16,8 +23,15 @@ const asanaRequestHeaders = {
   Cookie: 'TooBusyRedirectCount=0',
 };
 
+// Bynder API request header
+const bynderRequestHeaders = {
+  Authorization: `Bearer ${bynderKey}`,
+};
+
 module.exports = {
   vercelUrl,
   asanaApiUrl,
+  bynderApiUrl,
   asanaRequestHeaders,
+  bynderRequestHeaders,
 };

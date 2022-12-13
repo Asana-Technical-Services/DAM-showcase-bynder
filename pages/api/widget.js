@@ -2,7 +2,6 @@
  * API for the AppComponent widget function.
  * Returns the AppComponent metadata for a specific asset.
  */
-const constants = require('./constants');
 
 // Dummy dictionary for Widget metadata: approval, privacy status
 const widgetComponents = {
@@ -44,7 +43,7 @@ const handler = (req, res) => {
   // Should retrieve metadata from DAM
 
   let metadata = {};
-  if (req.query.resource_url === `${constants.vercelUrl}/dam/asset/1234`) {
+  if (req.query.resource_url === 'https://dam-showcase-andrew-git-dam-showcase-update-andrew-asana.vercel.app/dam/asset/1234') {
     metadata = {
       template: 'summary_with_details_v0',
       metadata: {
@@ -73,7 +72,7 @@ const handler = (req, res) => {
         ],
       },
     };
-  } else if (req.query.resource_url === `${constants.vercelUrl}/dam/asset/1235`) {
+  } else if (req.query.resource_url === 'https://dam-showcase-andrew-git-dam-showcase-update-andrew-asana.vercel.app/dam/asset/1235') {
     metadata = {
       template: 'summary_with_details_v0',
       metadata: {

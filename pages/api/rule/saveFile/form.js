@@ -1,11 +1,9 @@
-const constants = require('../../constants');
-
 const handler = (req, res) => {
   res.status(200).json(
     {
       template: 'form_metadata_v0',
       metadata: {
-        on_submit_callback: `${constants.vercelUrl}/api/rule/saveFile/submit`,
+        on_submit_callback: 'https://dam-showcase-andrew-git-dam-showcase-update-andrew-asana.vercel.app/api/rule/saveFile/submit',
         fields: [
           {
             type: 'single_line_text',
