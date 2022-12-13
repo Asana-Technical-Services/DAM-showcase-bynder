@@ -26,10 +26,10 @@ async function convertAssetsToList(assets) {
   */
 
 const handler = async (req, res) => {
-  const lookupKey = req && req.body && req.body.query;
+  // const lookupKey = req && req.body && req.body.query;
+  const { query } = req;
 
-  console.log(`Got req.body as: ${JSON.stringify(req.body)}`);
-  // console.log(`Got lookupKey as: ${JSON.parse(lookupKey)}`);
+  console.log(query);
 
   // Retrieve the list of asset results based on the search query
   const lookupData = await axios.get(`${constants.bynderApiUrl}/v4/media?keyword=${lookupKey}`, {
