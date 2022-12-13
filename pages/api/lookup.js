@@ -14,7 +14,7 @@ async function convertAssetsToList(assets) {
     const data = {
       icon_url: iconUrl,
       title: name,
-      id,
+      value: id,
     };
     return result.concat(data);
   }, []);
@@ -46,7 +46,7 @@ const handler = async (req, res) => {
   const assetsList = await convertAssetsToList(assets);
   res.status(200).json({
     header: 'Choose one of the following assets:',
-    item: assetsList,
+    items: assetsList,
   });
 };
 
