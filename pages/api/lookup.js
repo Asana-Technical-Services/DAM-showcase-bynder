@@ -40,11 +40,10 @@ const handler = async (req, res) => {
     });
     return;
   }
-
-  console.log(JSON.stringify(lookupData));
+  const assets = lookupData && lookupData.data;
 
   // Convert the Bynder assets list to the Asana items list
-  const assetsList = await convertAssetsToList(lookupData);
+  const assetsList = await convertAssetsToList(assets);
   res.status(200).json(assetsList);
 };
 
