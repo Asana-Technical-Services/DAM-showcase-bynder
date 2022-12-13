@@ -28,7 +28,7 @@ async function convertAssetsToList(assets) {
 const handler = async (req, res) => {
   const lookupKey = req && req.body && req.body.query;
 
-  console.log(`Got req.body as: ${JSON.parse(req.body)}`);
+  console.log(`Got req.body as: ${JSON.stringify(req.body)}`);
   // console.log(`Got lookupKey as: ${JSON.parse(lookupKey)}`);
 
   // Retrieve the list of asset results based on the search query
