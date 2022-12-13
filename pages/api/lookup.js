@@ -44,7 +44,10 @@ const handler = async (req, res) => {
 
   // Convert the Bynder assets list to the Asana items list
   const assetsList = await convertAssetsToList(assets);
-  res.status(200).json(assetsList);
+  res.status(200).json({
+    header: 'Choose one of the following assets:',
+    item: assetsList,
+  });
 };
 
 module.exports = handler;
