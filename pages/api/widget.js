@@ -4,7 +4,7 @@
  * API for the AppComponent widget function.
  * Returns the AppComponent metadata for a specific asset.
  */
-import prettyBytes from 'pretty-bytes';
+import { filesize } from 'filesize';
 
 const axios = require('axios');
 const constants = require('./constants');
@@ -48,7 +48,7 @@ const handler = async (req, res) => {
 
   const privacyColorText = isPublic ? 'blue' : 'red';
   const privacyText = isPublic ? 'Public' : 'Private';
-  const fileSizeText = prettyBytes(fileSize);
+  const fileSizeText = filesize(fileSize);
 
   const metadata = {
     template: 'summary_with_details_v0',
