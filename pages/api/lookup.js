@@ -10,11 +10,12 @@ async function convertAssetsToList(assets) {
   const assetsList = assets.reduce((result, currentValue) => {
     const iconUrl = currentValue.thumbnails && currentValue.thumbnails.mini;
     const { name } = currentValue;
-    const { id } = currentValue;
+    const idHash = currentValue && currentValue.idHash;
+    const mediaLink = `${constants.bynderApiUrl}/l/${idHash}`;
     const data = {
       icon_url: iconUrl,
       title: name,
-      value: id,
+      value: mediaLink,
     };
     return result.concat(data);
   }, []);
@@ -24,7 +25,6 @@ async function convertAssetsToList(assets) {
 /**
   * Call DAM API and retrieve assets that match the provided typeahead value
   */
-
 const handler = async (req, res) => {
   const { query } = req;
   const lookupKey = query && query.query;
