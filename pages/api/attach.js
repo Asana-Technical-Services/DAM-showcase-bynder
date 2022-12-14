@@ -3,10 +3,13 @@
  * API for the AppComponent attachment function.
  * Returns an asset url for the desired asset ID.
  */
+ const axios = require('axios');
+ const constants = require('./constants');
+
 /**
  * TODO: if preferred, return final url provided by DAM for specific asset ID
  */
-const handler = (req, res) => {
+const handler = async (req, res) => {
   // Check body and return if empty
   const { data } = req.body;
   if (!data) {
@@ -22,14 +25,25 @@ const handler = (req, res) => {
     throw new Error(error);
   }
 
-  console.log(dataParsed);
+  // Get the Bynder idHash to generate the asset media link
+  const id = dataParsed && dataParsed.value;
+  const assetData = await axios.get(`${constants.bynderApiUrl}/v4/media/${id}`, {
+    headers: constants.bynderRequestHeaders,
+  });
 
-  const mediaLink = dataParsed && dataParsed.value;
-  const assetId = (mediaLink.match(/.*\/l\/(.*)/) || [])[1];
+  if (!assetData) {
+    res.status(200).json({
+      error: 'No asset data found',
+    });
+    return;
+  }
+  const idHash = assetData && assetData.data && assetData.data.idHash;
+  const name = assetData && assetData.data && assetData.data.name;
+  const mediaLink = `${constants.bynderApiUrl}/l/${idHash}`;
 
   // Return resource
   const resource = {
-    resource_name: `Bynder asset ${assetId}`,
+    resource_name: name,
     resource_url: mediaLink,
   };
   res.status(200).json(resource);

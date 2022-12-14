@@ -10,12 +10,11 @@ async function convertAssetsToList(assets) {
   const assetsList = assets.reduce((result, currentValue) => {
     const iconUrl = currentValue.thumbnails && currentValue.thumbnails.mini;
     const { name } = currentValue;
-    const idHash = currentValue && currentValue.idHash;
-    const mediaLink = `${constants.bynderApiUrl}/l/${idHash}`;
+    const { id } = currentValue;
     const data = {
       icon_url: iconUrl,
       title: name,
-      value: mediaLink,
+      value: id,
     };
     return result.concat(data);
   }, []);
