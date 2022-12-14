@@ -1,11 +1,12 @@
+/* eslint-disable import/no-import-module-exports */
 /* eslint-disable no-console */
 /**
  * API for the AppComponent widget function.
  * Returns the AppComponent metadata for a specific asset.
  */
+import prettyBytes from 'pretty-bytes';
 
 const axios = require('axios');
-const prettyBytes = require('pretty-bytes');
 const constants = require('./constants');
 
 const handler = async (req, res) => {
@@ -47,7 +48,7 @@ const handler = async (req, res) => {
 
   const privacyColorText = isPublic ? 'blue' : 'red';
   const privacyText = isPublic ? 'Public' : 'Private';
-  const fileSizeText = prettyBytes.prettyBytes(fileSize);
+  const fileSizeText = prettyBytes(fileSize);
 
   const metadata = {
     template: 'summary_with_details_v0',
