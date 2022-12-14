@@ -1,137 +1,88 @@
+/* eslint-disable no-console */
 /**
  * API for the AppComponent widget function.
  * Returns the AppComponent metadata for a specific asset.
  */
 
-// Dummy dictionary for Widget metadata: approval, privacy status
-const widgetComponents = {
-  public: {
-    name: 'Privacy',
-    type: 'pill',
-    text: 'Public',
-    color: 'blue',
-  },
-  private: {
-    name: 'Privacy',
-    type: 'pill',
-    text: 'Private',
-    color: 'red',
-  },
-  notApproved: {
-    name: 'Status',
-    type: 'pill',
-    text: 'Not Yet Approved',
-    color: 'yellow',
-  },
-  approvalInProcess: {
-    name: 'Status',
-    type: 'pill',
-    text: 'Approval In Process',
-    color: 'purple',
-  },
-  approved: {
-    name: 'Status',
-    type: 'pill',
-    text: 'Approved',
-    color: 'green',
-  },
-};
+const axios = require('axios');
+const prettyBytes = require('pretty-bytes');
+const constants = require('./constants');
 
-const handler = (req, res) => {
+const handler = async (req, res) => {
   // TODO: validate input
-  // TODO: this function returns 3 possible static files depending on input.
-  // Should retrieve metadata from DAM
-
-  let metadata = {};
-  if (req.query.resource_url === 'https://dam-showcase-andrew-git-dam-showcase-update-andrew-asana.vercel.app/dam/asset/1234') {
-    metadata = {
-      template: 'summary_with_details_v0',
-      metadata: {
-        title: 'Presentation Template - Sales',
-        subtitle: 'PowerPoint template for customer facing sales decks',
-        subicon_url: 'https://www.freeiconspng.com/thumbs/ppt-icon/powerpoint-2013-icon-image-3.png',
-        footer: {
-          footer_type: 'updated',
-          last_updated_at: '2012-10-28T02:06:58.147Z',
-        },
-        comment_count: 12,
-        fields: [
-          widgetComponents.public,
-          widgetComponents.approved,
-          {
-            name: 'Latest Version',
-            type: 'text_with_icon',
-            text: '2022-09',
-          },
-          {
-            name: 'Contact',
-            type: 'text_with_icon',
-            text: 'John Doe',
-            icon_url: 'https://pbs.twimg.com/profile_images/1420161096569135107/KHdJ76A__400x400.jpg',
-          },
-        ],
-      },
-    };
-  } else if (req.query.resource_url === 'https://dam-showcase-andrew-git-dam-showcase-update-andrew-asana.vercel.app/dam/asset/1235') {
-    metadata = {
-      template: 'summary_with_details_v0',
-      metadata: {
-        title: 'Presentation Template - Marketing',
-        subtitle: 'PowerPoint template for customer marketing decks',
-        subicon_url: 'https://www.freeiconspng.com/thumbs/ppt-icon/powerpoint-2013-icon-image-3.png',
-        footer: {
-          footer_type: 'updated',
-          last_updated_at: '2012-10-28T02:06:58.147Z',
-        },
-        comment_count: 12,
-        fields: [
-          widgetComponents.public,
-          widgetComponents.notApproved,
-          {
-            name: 'Latest Version',
-            type: 'text_with_icon',
-            text: '2022-10',
-          },
-          {
-            name: 'Contact',
-            type: 'text_with_icon',
-            text: 'John Doe',
-            icon_url: 'https://pbs.twimg.com/profile_images/1420161096569135107/KHdJ76A__400x400.jpg',
-          },
-        ],
-      },
-    };
-  } else {
-    metadata = {
-      template: 'summary_with_details_v0',
-      metadata: {
-        title: 'Text File For Review',
-        subtitle: 'Draft of text for approval',
-        subicon_url: 'https://static.thenounproject.com/png/115686-200.png',
-        footer: {
-          footer_type: 'updated',
-          last_updated_at: '2012-10-29T02:06:58.147Z',
-        },
-        comment_count: 3,
-        fields: [
-          widgetComponents.private,
-          widgetComponents.approvalInProcess,
-          {
-            name: 'Latest Version',
-            type: 'text_with_icon',
-            text: '2022-10',
-          },
-          {
-            name: 'Contact',
-            type: 'text_with_icon',
-            text: 'John Doe',
-            icon_url: 'https://pbs.twimg.com/profile_images/1420161096569135107/KHdJ76A__400x400.jpg',
-          },
-        ],
-      },
-    };
+  const { data } = req.body;
+  if (!data) {
+    res.status(200).json({});
+    return;
+  }
+  // Retrieve item GID
+  let dataParsed;
+  try {
+    dataParsed = JSON.parse(data);
+  } catch (error) {
+    console.log(error);
+    throw new Error(error);
   }
 
+  // Get the Bynder asset to access fields for resource metadata
+  const id = dataParsed && dataParsed.value;
+  const responseData = await axios.get(`${constants.bynderApiUrl}/v4/media/${id}`, {
+    headers: constants.bynderRequestHeaders,
+  });
+
+  if (!responseData) {
+    res.status(200).json({
+      error: 'No asset data found',
+    });
+    return;
+  }
+
+  const assetData = responseData && responseData.data;
+  const name = assetData && assetData.name;
+  const description = assetData && assetData.description;
+  const dateModified = assetData && assetData.dateModified;
+  const userCreated = assetData && assetData.userCreated;
+  const isPublic = assetData && assetData.isPublic;
+  const fileSize = assetData && assetData.fileSize;
+
+  const privacyColorText = isPublic ? 'blue' : 'red';
+  const privacyText = isPublic ? 'Public' : 'Private';
+  const fileSizeText = prettyBytes.prettyBytes(fileSize);
+
+  const metadata = {
+    template: 'summary_with_details_v0',
+    metadata: {
+      title: `Bynder Asset <${name}>`,
+      subtitle: description,
+      footer: {
+        footer_type: 'updated',
+        last_updated_at: dateModified,
+      },
+      fields: [
+        {
+          name: 'Privacy',
+          type: 'pill',
+          text: privacyText,
+          color: privacyColorText,
+        },
+        {
+          name: 'File Size',
+          type: 'text_with_icon',
+          text: fileSizeText,
+        },
+        {
+          name: 'Created By',
+          type: 'text_with_icon',
+          text: userCreated,
+        },
+        {
+          name: 'Last Modified',
+          type: dateModified,
+          text: userCreated,
+        },
+      ],
+    },
+  };
   res.status(200).json(metadata);
 };
 
