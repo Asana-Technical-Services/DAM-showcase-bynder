@@ -21,6 +21,9 @@ const handler = (req, res) => {
     console.log(error);
     throw new Error(error);
   }
+
+  console.log(dataParsed);
+
   const name = dataParsed && dataParsed.title;
   const mediaLink = dataParsed && dataParsed.value;
 
