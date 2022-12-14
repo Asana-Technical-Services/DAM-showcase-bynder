@@ -39,7 +39,7 @@ const handler = async (req, res) => {
   }
   const idHash = assetData && assetData.data && assetData.data.idHash;
   const name = assetData && assetData.data && assetData.data.name;
-  const mediaLink = `${constants.bynderApiUrl}/l/${idHash}`;
+  const mediaLink = `https://asanasandbox2.bynder.com/l/${idHash}`;
 
   // Return resource
   const resource = {
