@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * API for the AppComponent attachment function.
  * Returns an asset url for the desired asset ID.
@@ -13,13 +14,20 @@ const handler = (req, res) => {
     return;
   }
   // Retrieve item GID
-  const dataParsed = JSON.parse(data);
-  const item = dataParsed && dataParsed.value;
+  let dataParsed;
+  try {
+    dataParsed = JSON.parse(data);
+  } catch (error) {
+    console.log(error);
+    throw new Error(error);
+  }
+  const name = dataParsed && dataParsed.title;
+  const mediaLink = dataParsed && dataParsed.value;
 
   // Return resource
   const resource = {
-    resource_name: item,
-    resource_url: `https://dam-showcase-andrew-git-dam-showcase-update-andrew-asana.vercel.app/dam/asset/${item}`,
+    resource_name: name,
+    resource_url: mediaLink,
   };
   res.status(200).json(resource);
 };

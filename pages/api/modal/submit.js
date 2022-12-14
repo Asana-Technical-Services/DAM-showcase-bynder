@@ -62,8 +62,9 @@ const handler = async (req, res) => {
       },
     }, {
       headers: constants.asanaRequestHeaders,
-    }).catch((err) => {
-      console.log(err);
+    }).catch((error) => {
+      console.log(error);
+      throw new Error(error);
     });
     // Update task: fill team custom field
     const customFields = {};
