@@ -24,12 +24,12 @@ const handler = (req, res) => {
 
   console.log(dataParsed);
 
-  const name = dataParsed && dataParsed.title;
   const mediaLink = dataParsed && dataParsed.value;
+  const assetId = (mediaLink.match(/.*\/l\/(.*)/) || [])[1];
 
   // Return resource
   const resource = {
-    resource_name: name,
+    resource_name: `Bynder asset ${assetId}`,
     resource_url: mediaLink,
   };
   res.status(200).json(resource);
