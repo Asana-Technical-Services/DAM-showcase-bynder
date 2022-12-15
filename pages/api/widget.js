@@ -73,8 +73,8 @@ const handler = async (req, res) => {
         },
         {
           name: 'Last Modified',
-          type: dateModified,
-          text: userCreated,
+          type: 'text_with_icon',
+          text: dateModified,
         },
       ],
     },
