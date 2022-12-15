@@ -13,7 +13,9 @@ const handler = async (req, res) => {
   // TODO: validate input
   const { data } = req.body;
   if (!data) {
-    res.status(200).json({});
+    res.status(200).json({
+      error: 'Missing data in request',
+    });
     return;
   }
   // Retrieve item GID

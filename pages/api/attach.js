@@ -43,7 +43,7 @@ const handler = async (req, res) => {
   const name = assetData && assetData.name;
   const mediaLink = `https://asanasandbox2.bynder.com/l/${idHash}`;
 
-  // Return resource
+  // Return resource to App Component
   const resource = {
     resource_name: name,
     resource_url: mediaLink,
