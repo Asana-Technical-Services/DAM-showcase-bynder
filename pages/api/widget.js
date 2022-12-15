@@ -22,28 +22,32 @@ const handler = async (req, res) => {
   // Get the Bynder asset to access fields for resource metadata
   const idMatch = query.resource_url && query.resource_url.match(/.*mediaId=(.*)/);
   const id = (idMatch || [])[1];
-  const responseData = await axios.get(`${constants.bynderApiUrl}/v4/media/${id}`, {
+  const assetLink = `${constants.bynderApiUrl}/v4/media/${id}`;
+  const responseData = await axios.get(assetLink, {
     headers: constants.bynderRequestHeaders,
   });
 
-  if (!responseData) {
+  const assetData = responseData && responseData.data;
+  if (!assetData) {
     res.status(200).json({
-      error: 'No asset data found',
+      error: `No asset data found for link: ${assetLink}`,
     });
     return;
   }
 
-  const assetData = responseData && responseData.data;
-  const name = assetData && assetData.name;
-  const description = assetData && assetData.description;
-  const dateModified = assetData && assetData.dateModified;
-  const userCreated = assetData && assetData.userCreated;
-  const isPublic = assetData && assetData.isPublic;
-  const fileSize = assetData && assetData.fileSize;
+  const { name } = assetData;
+  const { description } = assetData;
+  const { dateModified } = assetData;
+  const { userCreated } = assetData;
+  const { isPublic } = assetData;
+  const { fileSize } = assetData;
+  const { width } = assetData;
+  const { height } = assetData;
 
   const privacyColorText = isPublic ? 'blue' : 'red';
   const privacyText = isPublic ? 'Public' : 'Private';
   const fileSizeText = filesize(fileSize);
+  const dimensionsText = `${width}x${height}`;
 
   const metadata = {
     template: 'summary_with_details_v0',
@@ -62,19 +66,19 @@ const handler = async (req, res) => {
           color: privacyColorText,
         },
         {
-          name: 'File Size',
-          type: 'text_with_icon',
-          text: fileSizeText,
-        },
-        {
           name: 'Created By',
           type: 'text_with_icon',
           text: userCreated,
         },
         {
-          name: 'Last Modified',
+          name: 'File Size',
           type: 'text_with_icon',
-          text: dateModified,
+          text: fileSizeText,
+        },
+        {
+          name: 'Dimensions',
+          type: 'text_with_icon',
+          text: dimensionsText,
         },
       ],
     },
