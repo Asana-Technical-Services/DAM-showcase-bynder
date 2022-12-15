@@ -11,24 +11,17 @@ const constants = require('./constants');
 
 const handler = async (req, res) => {
   // TODO: validate input
-  const { data } = req.body;
-  if (!data) {
+  const { query } = req;
+  if (!query) {
     res.status(200).json({
       error: 'Missing data in request',
     });
     return;
   }
-  // Retrieve item GID
-  let dataParsed;
-  try {
-    dataParsed = JSON.parse(data);
-  } catch (error) {
-    console.log(error);
-    throw new Error(error);
-  }
 
   // Get the Bynder asset to access fields for resource metadata
-  const id = dataParsed && dataParsed.value;
+  const idMatch = query.resource_url && query.resource_url.match(/.*mediaId=(.*)/);
+  const id = (idMatch || [])[1];
   const responseData = await axios.get(`${constants.bynderApiUrl}/v4/media/${id}`, {
     headers: constants.bynderRequestHeaders,
   });
