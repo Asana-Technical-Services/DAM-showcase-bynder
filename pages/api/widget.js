@@ -129,15 +129,7 @@ const handler = async (req, res) => {
   const isBynderAsset = resourceUrl && resourceUrl.includes('asanasandbox2.bynder.com');
   const isAsanaAttachment = resourceUrl && resourceUrl.includes('app.asana.com');
 
-  console.log(
-    `Received the following as parameters:
-      > resourceUrl: ${resourceUrl}
-      > isBynderAsset: ${isBynderAsset}
-      > isAsanaAttachment: ${isAsanaAttachment}
-    `,
-  );
-
-  if (!isBynderAsset || !isAsanaAttachment) {
+  if (!isBynderAsset && !isAsanaAttachment) {
     res.status(200).json({
       error: `Missing asset link from resource <${resourceUrl}>`,
     });
