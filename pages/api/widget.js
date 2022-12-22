@@ -9,18 +9,9 @@ import { filesize } from 'filesize';
 const axios = require('axios');
 const constants = require('./constants');
 
-const handler = async (req, res) => {
-  // TODO: validate input
-  const { query } = req;
-  if (!query) {
-    res.status(200).json({
-      error: 'Missing data in request',
-    });
-    return;
-  }
-
+async function handleBynderAsset(resourceUrl) {
   // Get the Bynder asset to access fields for resource metadata
-  const idMatch = query.resource_url && query.resource_url.match(/.*mediaId=(.*)/);
+  const idMatch = resourceUrl && resourceUrl.match(/.*mediaId=(.*)/);
   const id = (idMatch || [])[1];
   const assetLink = `${constants.bynderApiUrl}/v4/media/${id}`;
   const responseData = await axios.get(assetLink, {
@@ -29,10 +20,9 @@ const handler = async (req, res) => {
 
   const assetData = responseData && responseData.data;
   if (!assetData) {
-    res.status(200).json({
+    return {
       error: `No asset data found for link: ${assetLink}`,
-    });
-    return;
+    };
   }
 
   const { name } = assetData;
@@ -83,6 +73,75 @@ const handler = async (req, res) => {
       ],
     },
   };
+  return metadata;
+}
+
+async function handleAsanaAttachment(resourceUrl) {
+  // Get the Bynder asset to access fields for resource metadata
+  const idMatch = resourceUrl && resourceUrl.match(/.*asset_id=(.*)/);
+  const id = (idMatch || [])[1];
+  const attachmentLink = `${constants.asanaApiUrl}/attachments/${id}`;
+  const responseData = await axios.get(attachmentLink, {
+    headers: constants.asanaRequestHeaders,
+  });
+
+  const assetData = responseData && responseData.data && responseData.data.data;
+  if (!assetData) {
+    return {
+      error: `No attachment data found for link: ${attachmentLink}`,
+    };
+  }
+
+  const { name } = assetData;
+  const { createdAt } = assetData;
+
+  const metadata = {
+    template: 'summary_with_details_v0',
+    metadata: {
+      title: `Asana Attachment <${name}>`,
+      footer: {
+        footer_type: 'custom_text',
+        text: 'Asana Attachment',
+      },
+      fields: [
+        {
+          name: 'Created At',
+          type: 'text_with_icon',
+          text: createdAt,
+        },
+      ],
+    },
+  };
+  return metadata;
+}
+
+const handler = async (req, res) => {
+  // TODO: validate input
+  const { query } = req;
+  if (!query) {
+    res.status(200).json({
+      error: 'Missing data in request',
+    });
+    return;
+  }
+
+  const resourceUrl = query.resource_url;
+  const isBynderAsset = resourceUrl && resourceUrl.includes('asanasandbox2.bynder.com');
+  const isAsanaAttachment = resourceUrl && resourceUrl.includes('app.asana.com');
+
+  if (!isBynderAsset || !isAsanaAttachment) {
+    res.status(200).json({
+      error: `Missing asset link from resource <${resourceUrl}>`,
+    });
+    return;
+  }
+
+  let metadata;
+  if (isBynderAsset) {
+    metadata = handleBynderAsset(resourceUrl);
+  } else {
+    metadata = handleAsanaAttachment(resourceUrl);
+  }
   res.status(200).json(metadata);
 };
 

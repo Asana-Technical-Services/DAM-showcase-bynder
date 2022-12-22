@@ -7,9 +7,6 @@
 const axios = require('axios');
 const constants = require('./constants');
 
-/**
- * TODO: if preferred, return final url provided by DAM for specific asset ID
- */
 const handler = async (req, res) => {
   // Check body and return if empty
   const { data } = req.body;
@@ -38,8 +35,7 @@ const handler = async (req, res) => {
     });
     return;
   }
-  const assetData = responseData && responseData.data;
-  const name = assetData && assetData.name;
+  const name = responseData.data && responseData.data.name;
   const mediaLink = `https://asanasandbox2.bynder.com/media?mediaId=${id}`;
 
   // Return resource to App Component
