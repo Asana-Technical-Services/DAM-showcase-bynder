@@ -85,6 +85,13 @@ async function handleAsanaAttachment(resourceUrl) {
     headers: constants.asanaRequestHeaders,
   });
 
+  console.log(`
+    Debugging the following parameters:
+     > responseData:  ${responseData}
+     > reponseData.data: ${responseData.data}
+     > responseData.data.data: ${responseData.data.data}
+  `);
+
   const assetData = responseData && responseData.data && responseData.data.data;
   if (!assetData) {
     return {
