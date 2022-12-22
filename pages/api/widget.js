@@ -85,22 +85,15 @@ async function handleAsanaAttachment(resourceUrl) {
     headers: constants.asanaRequestHeaders,
   });
 
-  console.log(`
-    Debugging the following parameters:
-     > responseData:  ${JSON.stringify(responseData)}
-     > reponseData.data: ${JSON.stringify(responseData.data)}
-     > responseData.data.data: ${JSON.stringify(responseData.data.data)}
-  `);
-
-  const assetData = responseData && responseData.data && responseData.data.data;
-  if (!assetData) {
+  const attachmentData = responseData && responseData.data && responseData.data.data;
+  if (!attachmentData) {
     return {
       error: `No attachment data found for link: ${attachmentLink}`,
     };
   }
 
-  const { name } = assetData;
-  const { createdAt } = assetData;
+  const { name } = attachmentData;
+  const { createdAt } = attachmentData;
 
   const metadata = {
     template: 'summary_with_details_v0',
@@ -148,6 +141,9 @@ const handler = async (req, res) => {
   } else {
     metadata = await handleAsanaAttachment(resourceUrl);
   }
+
+  console.log(`Got metadata as: ${JSON.stringify(metadata)}`);
+
   res.status(200).json(metadata);
 };
 
