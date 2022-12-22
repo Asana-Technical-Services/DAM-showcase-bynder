@@ -93,7 +93,7 @@ async function handleAsanaAttachment(resourceUrl) {
   }
 
   const { name } = attachmentData;
-  const { createdAt } = attachmentData;
+  const createdAt = attachmentData.created_at;
 
   const metadata = {
     template: 'summary_with_details_v0',
@@ -141,9 +141,6 @@ const handler = async (req, res) => {
   } else {
     metadata = await handleAsanaAttachment(resourceUrl);
   }
-
-  console.log(`Got metadata as: ${JSON.stringify(metadata)}`);
-
   res.status(200).json(metadata);
 };
 
