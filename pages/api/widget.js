@@ -87,9 +87,9 @@ async function handleAsanaAttachment(resourceUrl) {
 
   console.log(`
     Debugging the following parameters:
-     > responseData:  ${responseData}
-     > reponseData.data: ${responseData.data}
-     > responseData.data.data: ${responseData.data.data}
+     > responseData:  ${JSON.stringify(responseData)}
+     > reponseData.data: ${JSON.stringify(responseData.data)}
+     > responseData.data.data: ${JSON.stringify(responseData.data.data)}
   `);
 
   const assetData = responseData && responseData.data && responseData.data.data;
