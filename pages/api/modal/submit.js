@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-console */
 /**
  * API for the AppComponent modal form submit action.
@@ -7,6 +8,8 @@ const constants = require('../constants');
 
 const PROJECT_DAM_ASSETS_REVIEW = process.env.ASANA_PROJECT_DAM_ASSETS_REVIEW;
 const PROJECT_DAM_ASSETS_REVIEW_CF_TEAM = process.env.ASANA_PROJECT_DAM_ASSETS_REVIEW_CF_TEAM;
+const PROJECT_DAM_ASSETS_REVIEW_CF_NAME = process.env.ASANA_PROJECT_DAM_ASSETS_REVIEW_CF_NAME
+const PROJECT_DAM_ASSETS_REVIEW_CF_DESCRIPTION = process.env.ASANA_PROJECT_DAM_ASSETS_REVIEW_CF_DESCRIPTION;
 
 const handler = async (req, res) => {
   // Retrieve data and return if empty. Parse JSON otherwise
@@ -22,8 +25,11 @@ const handler = async (req, res) => {
   // Retrieve selected data from AppComponent Modal: attachment ID, team ID
   const { values } = dataParsed;
   const attachmentId = values.dropdown_half_width_1;
-  const teamID = values.dropdown_half_width_2;
-  if (!attachmentId || !teamID) {
+  const teamId = values.dropdown_half_width_2;
+  const name = values.single_line_text_full_width_1;
+  const description = values.single_line_text_full_width_2;
+
+  if (!attachmentId || !teamId) {
     res.status(200).json({
       error: 'No file or team ID',
     });
@@ -80,7 +86,9 @@ const handler = async (req, res) => {
 
   // Update task: fill team custom field
   const customFields = {};
-  customFields[PROJECT_DAM_ASSETS_REVIEW_CF_TEAM] = teamID;
+  customFields[PROJECT_DAM_ASSETS_REVIEW_CF_TEAM] = teamId;
+  customFields[PROJECT_DAM_ASSETS_REVIEW_CF_NAME] = name;
+  customFields[PROJECT_DAM_ASSETS_REVIEW_CF_DESCRIPTION] = description;
   await axios.put(`${constants.asanaApiUrl}/tasks/${taskData.gid}`, {
     data: {
       custom_fields: customFields,
