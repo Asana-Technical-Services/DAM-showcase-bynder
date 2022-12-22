@@ -116,7 +116,6 @@ async function handleAsanaAttachment(resourceUrl) {
 }
 
 const handler = async (req, res) => {
-  // TODO: validate input
   const { query } = req;
   if (!query) {
     res.status(200).json({
@@ -138,9 +137,9 @@ const handler = async (req, res) => {
 
   let metadata;
   if (isBynderAsset) {
-    metadata = handleBynderAsset(resourceUrl);
+    metadata = await handleBynderAsset(resourceUrl);
   } else {
-    metadata = handleAsanaAttachment(resourceUrl);
+    metadata = await handleAsanaAttachment(resourceUrl);
   }
   res.status(200).json(metadata);
 };
