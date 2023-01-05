@@ -7,6 +7,7 @@ const constants = require('../../constants');
 const asanaUtils = require('../../../../utils/asana');
 
 const handler = async (req, res) => {
+  console.log(`[DEBUG] Running handler for action route.`);
   const { data } = req.body;
   if (!data) {
     res.status(200).json({
@@ -24,6 +25,7 @@ const handler = async (req, res) => {
   }
 
   const targetObj = dataParsed.target_object;
+  console.log(`[DEBUG] Got target object for trigger as: ${targetObj}`);
 
   // Get the task data to determine task type and fetch custom fields
   const asanaConfig = {
@@ -35,10 +37,11 @@ const handler = async (req, res) => {
   const isApprovalTask = taskData && taskData.resource_subtype === 'approval';
 
   // Get the custom field value save path for the Bynder Asset URL
-  const saveFilePath = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset URL');
+  // const saveFilePath = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset URL');
 
   // Return if this isn't an approval task or the save file path is missing
-  if (!isApprovalTask || !saveFilePath || saveFilePath.length <= 0) {
+  // if (!isApprovalTask || !saveFilePath || saveFilePath.length <= 0) {
+  if (!isApprovalTask) {
     res.status(200).json({
       error: 'Missing correct task data for save file',
     });
@@ -55,13 +58,15 @@ const handler = async (req, res) => {
   // 1. Get the closest Amazon S3 upload endpoint
   const endpointResponse = await axios.get(`${constants.bynderApiUrl}/upload/endpoint`, bynderConfig);
   const endpointUrl = endpointResponse && endpointResponse.data;
-  console.log(endpointUrl);
+  console.log(`[DEBUG] Got endpoint url as: ${endpointUrl}`);
 
   // 2. Initialize the upload
   const assetName = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Name');
   const formData = { filename: assetName };
   const initResponse = await axios.post(`${constants.bynderApiUrl}/upload/init`, formData, bynderConfig);
   const params = initResponse && initResponse.multipart_params;
+  console.log(`[DEBUG] Got params as: ${JSON.stringify(params)}`);
+
   if (!params) {
     res.status(200).json({
       error: 'Failed to initialize upload to Amazon S3 endpoint',
