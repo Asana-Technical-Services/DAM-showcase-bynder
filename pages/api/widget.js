@@ -14,11 +14,11 @@ async function handleBynderAsset(resourceUrl) {
   const idMatch = resourceUrl && resourceUrl.match(/.*mediaId=(.*)/);
   const id = (idMatch || [])[1];
   const assetLink = `${constants.bynderApiUrl}/v4/media/${id}`;
-  const responseData = await axios.get(assetLink, {
+  const response = await axios.get(assetLink, {
     headers: constants.bynderRequestHeaders,
   });
 
-  const assetData = responseData && responseData.data;
+  const assetData = response && response.data;
   if (!assetData) {
     return {
       error: `No asset data found for link: ${assetLink}`,
@@ -81,11 +81,11 @@ async function handleAsanaAttachment(resourceUrl) {
   const idMatch = resourceUrl && resourceUrl.match(/.*asset_id=(.*)/);
   const id = (idMatch || [])[1];
   const attachmentLink = `${constants.asanaApiUrl}/attachments/${id}`;
-  const responseData = await axios.get(attachmentLink, {
+  const response = await axios.get(attachmentLink, {
     headers: constants.asanaRequestHeaders,
   });
 
-  const attachmentData = responseData && responseData.data && responseData.data.data;
+  const attachmentData = response && response.data && response.data.data;
   if (!attachmentData) {
     return {
       error: `No attachment data found for link: ${attachmentLink}`,
@@ -98,7 +98,7 @@ async function handleAsanaAttachment(resourceUrl) {
   const metadata = {
     template: 'summary_with_details_v0',
     metadata: {
-      title: `Asana Attachment <${name}>`,
+      title: `Asana Attachment for Review <${name}>`,
       footer: {
         footer_type: 'custom_text',
         text: 'Asana Attachment',

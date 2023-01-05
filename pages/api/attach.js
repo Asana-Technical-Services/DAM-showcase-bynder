@@ -25,17 +25,17 @@ const handler = async (req, res) => {
 
   // Get the Bynder id to generate the asset media link
   const id = dataParsed && dataParsed.value;
-  const responseData = await axios.get(`${constants.bynderApiUrl}/v4/media/${id}`, {
+  const response = await axios.get(`${constants.bynderApiUrl}/v4/media/${id}`, {
     headers: constants.bynderRequestHeaders,
   });
 
-  if (!responseData) {
+  if (!response) {
     res.status(200).json({
       error: 'No asset data found',
     });
     return;
   }
-  const name = responseData.data && responseData.data.name;
+  const name = response.data && response.data.name;
   const mediaLink = `https://asanasandbox2.bynder.com/media?mediaId=${id}`;
 
   // Return resource to App Component

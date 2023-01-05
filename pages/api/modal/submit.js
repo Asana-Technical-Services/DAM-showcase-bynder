@@ -10,6 +10,7 @@ const PROJECT_DAM_ASSETS_REVIEW = process.env.ASANA_PROJECT_DAM_ASSETS_REVIEW;
 const PROJECT_DAM_ASSETS_REVIEW_CF_TEAM = process.env.ASANA_PROJECT_DAM_ASSETS_REVIEW_CF_TEAM;
 const PROJECT_DAM_ASSETS_REVIEW_CF_NAME = process.env.ASANA_PROJECT_DAM_ASSETS_REVIEW_CF_NAME;
 const PROJECT_DAM_ASSETS_REVIEW_CF_DESCRIPTION = process.env.ASANA_PROJECT_DAM_ASSETS_REVIEW_CF_DESCRIPTION;
+const PROJECT_DAM_ASSETS_REVIEW_CF_GID = process.env.ASANA_PROJECT_DAM_ASSETS_REVIEW_CF_GID;
 
 const handler = async (req, res) => {
   // Retrieve data and return if empty. Parse JSON otherwise
@@ -20,13 +21,20 @@ const handler = async (req, res) => {
     });
     return;
   }
-  const dataParsed = JSON.parse(data);
+
+  let dataParsed;
+  try {
+    dataParsed = JSON.parse(data);
+  } catch (error) {
+    console.log(error);
+    throw new Error(error);
+  }
 
   // Retrieve selected data from AppComponent Modal: attachment ID, team ID
   const { values } = dataParsed;
   const attachmentId = values.dropdown_half_width_1;
   const teamId = values.dropdown_half_width_2;
-  const name = values.single_line_text_full_width_1;
+  // const name = values.single_line_text_full_width_1;
   const description = values.single_line_text_full_width_2;
 
   if (!attachmentId || !teamId) {
@@ -37,11 +45,11 @@ const handler = async (req, res) => {
   }
 
   // Fetch attachment data from Asana for selected attachment ID
-  const responseData = await axios.get(`${constants.asanaApiUrl}/attachments/${attachmentId}`, {
+  const response = await axios.get(`${constants.asanaApiUrl}/attachments/${attachmentId}`, {
     headers: constants.asanaRequestHeaders,
   });
 
-  const attachmentData = responseData && responseData.data && responseData.data.data;
+  const attachmentData = response && response.data && response.data.data;
   if (!attachmentData) {
     res.status(200).json({
       error: 'No attachment found',
@@ -52,6 +60,7 @@ const handler = async (req, res) => {
   // Extract parent task
   const taskData = attachmentData && attachmentData.parent;
   const attachmentName = attachmentData && attachmentData.name;
+  const attachmentGid = attachmentData && attachmentData.gid;
   const isTask = taskData && taskData.resource_type === 'task';
 
   if (!isTask) {
@@ -85,10 +94,13 @@ const handler = async (req, res) => {
   });
 
   // Update task: fill team custom field
+  // TODO: Handle which name to set for custom field name value
+  // Consider capturing file extension and appending to new name
   const customFields = {};
   customFields[PROJECT_DAM_ASSETS_REVIEW_CF_TEAM] = teamId;
-  customFields[PROJECT_DAM_ASSETS_REVIEW_CF_NAME] = name;
+  customFields[PROJECT_DAM_ASSETS_REVIEW_CF_NAME] = attachmentName;
   customFields[PROJECT_DAM_ASSETS_REVIEW_CF_DESCRIPTION] = description;
+  customFields[PROJECT_DAM_ASSETS_REVIEW_CF_GID] = attachmentGid;
   await axios.put(`${constants.asanaApiUrl}/tasks/${taskData.gid}`, {
     data: {
       custom_fields: customFields,
