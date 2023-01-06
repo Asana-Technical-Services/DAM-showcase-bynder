@@ -107,7 +107,7 @@ const handler = async (req, res) => {
     });
     return;
   }
-  const { downloadUrl } = attachmentData;
+  const downloadUrl = attachmentData.download_url;
   console.log(`[DEBUG] Got download url: ${downloadUrl}`);
 
   //   b. Download the file using Axios
