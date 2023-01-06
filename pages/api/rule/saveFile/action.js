@@ -82,7 +82,7 @@ const handler = async (req, res) => {
   const assetName = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Name');
   const formData = getFormData({ filename: assetName });
   const initResponse = await axios.post(`${constants.bynderApiUrl}/upload/init`, formData, bynderMultiPartConfig);
-  const params = initResponse && initResponse.multipart_params;
+  const params = initResponse && initResponse.data && initResponse.data.multipart_params;
   console.log(`[DEBUG] Got params as: ${JSON.stringify(params)}`);
 
   if (!params) {
