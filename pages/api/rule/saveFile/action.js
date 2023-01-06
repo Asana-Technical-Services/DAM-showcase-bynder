@@ -95,8 +95,12 @@ const handler = async (req, res) => {
   // 3. Upload the file in chunks and register every uploaded chunk
   //   a. Get the Asana task attachment and download url
   const attachmentGid = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Attachment GID');
+  // TODO: Handle if attachment gid is missing
+
   const attachmentResponse = await axios.get(`${constants.asanaApiUrl}/attachments/${attachmentGid}`, asanaConfig);
-  const attachmentData = attachmentResponse && attachmentResponse.data;
+  const attachmentData = attachmentResponse
+    && attachmentResponse.data
+    && attachmentResponse.data.data;
   if (!attachmentData) {
     res.status(200).json({
       error: 'No attachment data found',
@@ -104,6 +108,7 @@ const handler = async (req, res) => {
     return;
   }
   const { downloadUrl } = attachmentData;
+  console.log(`[DEBUG] Got download url: ${downloadUrl}`);
 
   //   b. Download the file using Axios
   const imageResponse = await axios.get(downloadUrl, { responseType: 'arraybuffer' });
