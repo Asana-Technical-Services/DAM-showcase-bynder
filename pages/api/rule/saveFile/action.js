@@ -136,10 +136,10 @@ const handler = async (req, res) => {
 
   //   e. Register the uploaded chunks
   const uploadId = initResponse.data.s3file && initResponse.data.s3file.uploadid;
-  const targetId = initResponse.data.s3file && initResponse.data.s3file.targetid;
+  const targetid = initResponse.data.s3file && initResponse.data.s3file.targetid;
   const chunkNumber = 1;
   const filename = params.key;
-  const uploadParams = { targetId, chunkNumber, filename };
+  const uploadParams = { targetid, chunkNumber, filename };
   const registerResponse = await axios.post(
     `${constants.bynderApiUrl}/v4/upload/${uploadId}`,
     getFormData(uploadParams),
@@ -149,7 +149,7 @@ const handler = async (req, res) => {
 
   //   f. Finalize the completely uploaded file
   const finalizeParams = {
-    targetId,
+    targetid,
     s3_filename: filename,
     chunks: 1,
     original_filename: assetName,
