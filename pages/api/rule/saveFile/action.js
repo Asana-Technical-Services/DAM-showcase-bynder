@@ -132,7 +132,9 @@ const handler = async (req, res) => {
   console.log(`[DEBUG] Got form data length sync as: ${appendedParamsFormData.getLengthSync()}`);
 
   const uploadResponse = await axios.post(endpointUrl, appendedParamsFormData, {
-    headers: appendedParamsFormData.getHeaders(),
+    headers: {
+      'content-length': appendedParamsFormData.getLengthSync(),
+    },
   });
   console.log(`Received upload response as: ${JSON.stringify(uploadResponse)}`);
 
