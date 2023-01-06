@@ -126,10 +126,10 @@ const handler = async (req, res) => {
   appendedParams.chunks = 1;
   appendedParams.Filename = params.key;
   appendedParams.file = imageData;
-  const uploadResponse = await axios.post(
-    endpointUrl,
-    getFormData(appendedParams),
-  );
+  const appendedParamsFormData = getFormData(appendedParams);
+  const uploadResponse = await axios.post(endpointUrl, appendedParamsFormData, {
+    headers: appendedParamsFormData.getHeaders(),
+  });
   console.log(`Received upload response as: ${JSON.stringify(uploadResponse)}`);
 
   //   e. Register the uploaded chunks
