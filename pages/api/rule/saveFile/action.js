@@ -127,6 +127,10 @@ const handler = async (req, res) => {
   appendedParams.Filename = params.key;
   appendedParams.file = imageData;
   const appendedParamsFormData = getFormData(appendedParams);
+
+  console.log(`[DEBUG] Got form data headers as: ${appendedParamsFormData.getHeaders()}`);
+  console.log(`[DEBUG] Got form data length sync as: ${appendedParamsFormData.getLengthSync()}`);
+
   const uploadResponse = await axios.post(endpointUrl, appendedParamsFormData, {
     headers: appendedParamsFormData.getHeaders(),
   });
