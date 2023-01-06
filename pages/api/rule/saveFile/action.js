@@ -3,6 +3,7 @@
  * API for the AppComponent triggered rule action.
  */
 const axios = require('axios');
+const FormData = require('form-data');
 const constants = require('../../constants');
 const asanaUtils = require('../../../../utils/asana');
 
@@ -63,8 +64,13 @@ const handler = async (req, res) => {
   const bynderConfig = {
     headers: constants.bynderRequestHeaders,
   };
+  const newFormData = new FormData();
+  const appendedHeaders = Object.assign(
+    constants.bynderMultiPartRequestHeaders,
+    newFormData.getHeaders(),
+  );
   const bynderMultiPartConfig = {
-    headers: constants.bynderMultiPartRequestHeaders,
+    headers: appendedHeaders,
   };
 
   // 1. Get the closest Amazon S3 upload endpoint
