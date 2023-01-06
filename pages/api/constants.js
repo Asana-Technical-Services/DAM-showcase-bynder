@@ -28,10 +28,16 @@ const bynderRequestHeaders = {
   Authorization: `Bearer ${bynderKey}`,
 };
 
+const bynderMultiPartRequestHeaders = {
+  Authorization: `Bearer ${bynderKey}`,
+  'Content-Type': 'multipart/form-data',
+};
+
 module.exports = {
   vercelUrl,
   asanaApiUrl,
   bynderApiUrl,
   asanaRequestHeaders,
   bynderRequestHeaders,
+  bynderMultiPartRequestHeaders,
 };
