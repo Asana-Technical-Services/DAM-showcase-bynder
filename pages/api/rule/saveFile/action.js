@@ -135,8 +135,8 @@ const handler = async (req, res) => {
   console.log(`Received upload response as: ${JSON.stringify(uploadResponse.data)}`);
 
   //   e. Register the uploaded chunks
-  const uploadId = initResponse.s3file && initResponse.s3file.uploadid;
-  const targetId = initResponse.s3file && initResponse.s3file.targetid;
+  const uploadId = initResponse.data.s3file && initResponse.data.s3file.uploadid;
+  const targetId = initResponse.data.s3file && initResponse.data.s3file.targetid;
   const chunkNumber = 1;
   const filename = params.key;
   const uploadParams = { targetId, chunkNumber, filename };
