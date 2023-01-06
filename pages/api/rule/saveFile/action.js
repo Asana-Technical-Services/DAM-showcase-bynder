@@ -127,16 +127,12 @@ const handler = async (req, res) => {
   appendedParams.Filename = params.key;
   appendedParams.file = imageData;
   const appendedParamsFormData = getFormData(appendedParams);
-
-  console.log(`[DEBUG] Got form data headers as: ${appendedParamsFormData.getHeaders()}`);
-  console.log(`[DEBUG] Got form data length sync as: ${appendedParamsFormData.getLengthSync()}`);
-
   const uploadResponse = await axios.post(endpointUrl, appendedParamsFormData, {
     headers: {
       'content-length': appendedParamsFormData.getLengthSync(),
     },
   });
-  console.log(`Received upload response as: ${JSON.stringify(uploadResponse)}`);
+  console.log(`Received upload response as: ${JSON.stringify(uploadResponse.data)}`);
 
   //   e. Register the uploaded chunks
   const uploadId = initResponse.s3file && initResponse.s3file.uploadid;
@@ -149,7 +145,7 @@ const handler = async (req, res) => {
     getFormData(uploadParams),
     bynderMultiPartConfig,
   );
-  console.log(`Received register response as: ${JSON.stringify(registerResponse)}`);
+  console.log(`Received register response as: ${JSON.stringify(registerResponse.data)}`);
 
   //   f. Finalize the completely uploaded file
   const finalizeParams = {
@@ -163,7 +159,7 @@ const handler = async (req, res) => {
     getFormData(finalizeParams),
     bynderMultiPartConfig,
   );
-  console.log(`Received finalize response as: ${JSON.stringify(finalizeResponse)}`);
+  console.log(`Received finalize response as: ${JSON.stringify(finalizeResponse.data)}`);
 
   //   g. Poll the state of the finalized files
   const importId = finalizeResponse.data && finalizeResponse.data.importId;
@@ -185,7 +181,7 @@ const handler = async (req, res) => {
     getFormData(saveParams),
     bynderMultiPartConfig,
   );
-  console.log(`Received save response as: ${JSON.stringify(saveResponse)}`);
+  console.log(`Received save response as: ${JSON.stringify(saveResponse.data)}`);
 
   res.status(200).json({
     action_result: 'ok',
