@@ -129,7 +129,6 @@ const handler = async (req, res) => {
   const uploadResponse = await axios.post(
     endpointUrl,
     getFormData(appendedParams),
-    bynderMultiPartConfig,
   );
   console.log(`Received upload response as: ${JSON.stringify(uploadResponse)}`);
 
