@@ -165,7 +165,7 @@ const handler = async (req, res) => {
   const importId = finalizeResponse.data && finalizeResponse.data.importId;
   // TODO: Implement loop to handle making requests
   // until itemsDone from the response matches items in query parameters
-  const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll?items=${importId}`);
+  const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll?items=${importId}`, bynderConfig);
   console.log(`Received poll response as: ${JSON.stringify(pollResponse)}`);
 
   //   h. Save as a new asset
