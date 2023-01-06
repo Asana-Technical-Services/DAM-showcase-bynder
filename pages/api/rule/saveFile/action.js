@@ -108,7 +108,6 @@ const handler = async (req, res) => {
     return;
   }
   const downloadUrl = attachmentData.download_url;
-  console.log(`[DEBUG] Got download url: ${downloadUrl}`);
 
   //   b. Download the file using Axios
   const imageResponse = await axios.get(downloadUrl, { responseType: 'arraybuffer' });
@@ -139,7 +138,7 @@ const handler = async (req, res) => {
   const targetid = initResponse.data.s3file && initResponse.data.s3file.targetid;
   const chunkNumber = 1;
   const filename = params.key;
-  const uploadParams = { targetid, chunkNumber, filename };
+  const uploadParams = { chunkNumber, targetid, filename };
   const registerResponse = await axios.post(
     `${constants.bynderApiUrl}/v4/upload/${uploadId}`,
     getFormData(uploadParams),
