@@ -167,23 +167,23 @@ const handler = async (req, res) => {
 
   // TODO: Implement loop to handle making requests
   // until itemsDone from the response matches items in query parameters
-  // const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll?items=${importId}`, bynderConfig);
-  // console.log(`Received poll response as: ${JSON.stringify(pollResponse.data)}`);
+  const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll?items=${importId}`, bynderConfig);
+  console.log(`Received poll response as: ${JSON.stringify(pollResponse.data)}`);
 
-  // //   h. Save as a new asset
-  // const assetDescription = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Description');
-  // const saveParams = {
-  //   brandId: 'EC8550AE-87AD-4700-B2E26D459F6933C4',
-  //   name: assetName,
-  //   description: assetDescription,
-  //   tags: 'test-tag-1,test-tag-2', // TODO: Implement tag handling from Asana custom fields
-  // };
-  // const saveResponse = await axios.post(
-  //   `${constants.bynderApiUrl}/v4/media/save/${importId}`,
-  //   getFormData(saveParams),
-  //   bynderMultiPartConfig,
-  // );
-  // console.log(`Received save response as: ${JSON.stringify(saveResponse.data)}`);
+  //   h. Save as a new asset
+  const assetDescription = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Description');
+  const saveParams = {
+    brandId: 'EC8550AE-87AD-4700-B2E26D459F6933C4',
+    name: assetName,
+    description: assetDescription,
+    tags: 'test-tag-1,test-tag-2', // TODO: Implement tag handling from Asana custom fields
+  };
+  const saveResponse = await axios.post(
+    `${constants.bynderApiUrl}/v4/media/save/${importId}`,
+    getFormData(saveParams),
+    bynderMultiPartConfig,
+  );
+  console.log(`Received save response as: ${JSON.stringify(saveResponse.data)}`);
 
   res.status(200).json({
     action_result: 'ok',
