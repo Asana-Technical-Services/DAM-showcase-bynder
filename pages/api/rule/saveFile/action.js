@@ -174,7 +174,7 @@ const handler = async (req, res) => {
       Authorization: authHeader,
     },
   };
-  const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll`, pollParams);
+  const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll/`, pollParams);
   console.log(`Received poll response as: ${JSON.stringify(pollResponse.data)}`);
 
   //   h. Save as a new asset
