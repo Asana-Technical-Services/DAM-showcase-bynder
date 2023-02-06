@@ -24,6 +24,7 @@ const handler = async (req, res) => {
   }
 
   // Get the Bynder id to generate the asset media link
+  console.log(`[DAM] Got dataParsed as ${dataParsed}`);
   const id = dataParsed && dataParsed.value;
   const response = await axios.get(`${constants.bynderApiUrl}/v4/media/${id}`, {
     headers: constants.bynderRequestHeaders,
