@@ -193,6 +193,7 @@ const handler = async (req, res) => {
       finishedProcessing = pollResponse.itemsFailed
       || pollResponse.itemsRejected
       || pollResponse.itemsDone;
+      await new Promise(r => setTimeout(r, 2000));
     }
   })();
   return;
