@@ -182,7 +182,13 @@ const handler = async (req, res) => {
       },
       params: { items: importId },
     };
-    const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll/`, config);
+    const config2 = {
+      headers: {
+        Authorization: constants.bynderRequestHeaders.Authorization,
+      },
+    };
+    // const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll/`, config);
+    const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll?items=${importId}`, config2);
     console.log(`Received poll response as: ${JSON.stringify(pollResponse.data)}`);
     return pollResponse;
   }
