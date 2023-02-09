@@ -167,29 +167,13 @@ const handler = async (req, res) => {
 
   // TODO: Implement loop to handle making requests
   // until itemsDone from the response matches items in query parameters
-  // const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll?items=${importId}`, bynderConfig);
-
-  // const pollResponse = await fetch('https://asanasandbox2.bynder.com/api/v4/upload/poll?items=' + importId, {
-  //   method: 'GET',
-  //   headers: {
-  //     Authorization: constants.bynderRequestHeaders.Authorization,
-  //   },
-  // });
   async function pollItems() {
     const config = {
       headers: {
         Authorization: constants.bynderRequestHeaders.Authorization,
       },
-      params: { items: importId },
     };
-    const config2 = {
-      headers: {
-        Authorization: constants.bynderRequestHeaders.Authorization,
-      },
-    };
-    // const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll/`, config);
-    // const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll?items=${importId}`, config2);
-    const pollResponse = await axios.get(`https://asanasandbox2.bynder.com/api/v4/upload/poll?items=${importId}`, config2);
+    const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll?items=${importId}`, config);
     console.log(`Received poll response as: ${JSON.stringify(pollResponse.data)}`);
     return pollResponse.data;
   }
