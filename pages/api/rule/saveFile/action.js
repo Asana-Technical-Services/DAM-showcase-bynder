@@ -205,6 +205,7 @@ const handler = async (req, res) => {
     }
   })();
   console.log(`Finished poll processing, current data is: ${pollResponse}`);
+  console.log('Attempintg to save the asset.');
 
   //   h. Save as a new asset
   const assetDescription = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Description');
