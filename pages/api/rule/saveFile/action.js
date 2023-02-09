@@ -187,12 +187,14 @@ const handler = async (req, res) => {
     return pollResponse;
   }
   let finishedProcessing = false;
-  while (!finishedProcessing) {
-    const pollResponse = pollItems();
-    finishedProcessing = pollResponse.itemsFailed
-    || pollResponse.itemsRejected
-    || pollResponse.itemsDone;
-  }
+  (async () => {
+    while (!finishedProcessing) {
+      const pollResponse = await pollItems();
+      finishedProcessing = pollResponse.itemsFailed
+      || pollResponse.itemsRejected
+      || pollResponse.itemsDone;
+    }
+  })();
   return;
   //   h. Save as a new asset
   const assetDescription = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Description');
