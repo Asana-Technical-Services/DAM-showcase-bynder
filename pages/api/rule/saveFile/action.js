@@ -188,7 +188,8 @@ const handler = async (req, res) => {
       },
     };
     // const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll/`, config);
-    const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll?items=${importId}`, config2);
+    // const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll?items=${importId}`, config2);
+    const pollResponse = await axios.get(`https://asanasandbox2.bynder.com/api/v4/upload/poll?items=${importId}`, config2);
     console.log(`Received poll response as: ${JSON.stringify(pollResponse.data)}`);
     return pollResponse;
   }
