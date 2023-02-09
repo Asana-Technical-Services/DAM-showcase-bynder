@@ -169,10 +169,10 @@ const handler = async (req, res) => {
   // until itemsDone from the response matches items in query parameters
   // const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll?items=${importId}`, bynderConfig);
   const config = {
-    params: { items: importId },
     headers: {
       Authorization: constants.bynderRequestHeaders.Authorization,
     },
+    params: { items: importId },
   };
   console.log(`Received Bynder token as <${constants.bynderRequestHeaders.Authorization}>`);
   console.log(`Received Bynder config as <${JSON.stringify(config)}>`);
@@ -182,8 +182,8 @@ const handler = async (req, res) => {
   //     Authorization: constants.bynderRequestHeaders.Authorization,
   //   },
   // });
-  // const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll/`, config);
-  // console.log(`Received poll response as: ${JSON.stringify(pollResponse.data)}`);
+  const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll/`, config);
+  console.log(`Received poll response as: ${JSON.stringify(pollResponse.data)}`);
   return
   //   h. Save as a new asset
   const assetDescription = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Description');
