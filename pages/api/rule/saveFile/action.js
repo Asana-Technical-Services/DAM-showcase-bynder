@@ -188,7 +188,7 @@ const handler = async (req, res) => {
   }
   let finishedProcessing = false;
   let pollResponse;
-  (async () => {
+  await (async () => {
     while (!finishedProcessing) {
       pollResponse = await pollItems();
       finishedProcessing = pollResponse.itemsFailed
