@@ -191,22 +191,21 @@ const handler = async (req, res) => {
     // const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll?items=${importId}`, config2);
     const pollResponse = await axios.get(`https://asanasandbox2.bynder.com/api/v4/upload/poll?items=${importId}`, config2);
     console.log(`Received poll response as: ${JSON.stringify(pollResponse.data)}`);
-    return pollResponse;
+    return pollResponse.data;
   }
   let finishedProcessing = false;
-  let pollResponse;
+  let pollData;
   (async () => {
     while (!finishedProcessing) {
-      pollResponse = await pollItems();
-      const pollData = pollResponse.data;
+      pollData = await pollItems();
       finishedProcessing = (pollData.itemsFailed && pollData.itemsFailed.length)
       || (pollData.itemsRejected && pollData.itemsRejected.length)
       || (pollData.itemsDone && pollData.itemsDone.length);
-      // await new Promise(r => setTimeout(r, 200));
+      await new Promise(r => setTimeout(r, 200));
     }
   })();
 
-  console.log(`Finished poll processing, current data is: ${pollResponse}`);
+  console.log(`Finished poll processing, current data is: ${pollData}`);
   console.log('Attempintg to save the asset.');
   return;
   //   h. Save as a new asset
