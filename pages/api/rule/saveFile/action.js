@@ -198,9 +198,9 @@ const handler = async (req, res) => {
   await (async () => {
     while (!finishedProcessing) {
       pollResponse = await pollItems();
-      finishedProcessing = pollResponse.itemsFailed
-      || pollResponse.itemsRejected
-      || pollResponse.itemsDone;
+      finishedProcessing = (pollResponse.itemsFailed && pollResponse.itemsFailed.length)
+      || (pollResponse.itemsRejected && pollResponse.itemsRejected.length)
+      || (pollResponse.itemsDone && pollResponse.itemsDone.length); 
       await new Promise(r => setTimeout(r, 500));
     }
   })();
