@@ -195,15 +195,13 @@ const handler = async (req, res) => {
   }
   let finishedProcessing = false;
   let pollData;
-  (async () => {
-    while (!finishedProcessing) {
-      pollData = await pollItems();
-      finishedProcessing = (pollData.itemsFailed && pollData.itemsFailed.length)
-      || (pollData.itemsRejected && pollData.itemsRejected.length)
-      || (pollData.itemsDone && pollData.itemsDone.length);
-      await new Promise(r => setTimeout(r, 200));
-    }
-  })();
+  while (!finishedProcessing) {
+    pollData = await pollItems();
+    finishedProcessing = (pollData.itemsFailed && pollData.itemsFailed.length)
+    || (pollData.itemsRejected && pollData.itemsRejected.length)
+    || (pollData.itemsDone && pollData.itemsDone.length);
+    // await new Promise(r => setTimeout(r, 200));
+  }
 
   console.log(`Finished poll processing, current data is: ${pollData}`);
   console.log('Attempintg to save the asset.');
