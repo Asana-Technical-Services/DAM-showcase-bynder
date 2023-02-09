@@ -195,17 +195,28 @@ const handler = async (req, res) => {
   }
   let finishedProcessing = false;
   let pollData;
+  let timeoutThreshold = 0;
   while (!finishedProcessing) {
+    if (timeoutThreshold >= 40000) {
+      break;
+    }
     pollData = await pollItems();
     finishedProcessing = (pollData.itemsFailed && pollData.itemsFailed.length)
     || (pollData.itemsRejected && pollData.itemsRejected.length)
     || (pollData.itemsDone && pollData.itemsDone.length);
-    // await new Promise(r => setTimeout(r, 200));
+    await new Promise(r => setTimeout(r, 200));
+    timeoutThreshold += 200;
   }
 
+  if (!finishedProcessing) {
+    res.status(200).json({
+      error: 'No successfully processed image.',
+    });
+    return;
+  }
   console.log(`Finished poll processing, current data is: ${pollData}`);
   console.log('Attempintg to save the asset.');
-  return;
+
   //   h. Save as a new asset
   const assetDescription = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Description');
   const saveParams = {
