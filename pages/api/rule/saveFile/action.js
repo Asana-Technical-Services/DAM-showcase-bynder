@@ -167,13 +167,19 @@ const handler = async (req, res) => {
 
   // TODO: Implement loop to handle making requests
   // until itemsDone from the response matches items in query parameters
-  const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll?items=${importId}`, bynderConfig);
+  // const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll?items=${importId}`, bynderConfig);
   const config = {
     params: { items: importId },
     headers: {
       Authorization: constants.bynderRequestHeaders.Authorization,
     },
   };
+  const pollResponse = await fetch(`${constants.bynderApiUrl}/v4/upload/poll?items=${importId}`, {
+    method: 'GET',
+    headers: {
+      Authorization: constants.bynderRequestHeaders.Authorization,
+    },
+  });
   // const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll/`, config);
   console.log(`Received poll response as: ${JSON.stringify(pollResponse.data)}`);
 
