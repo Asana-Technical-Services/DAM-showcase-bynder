@@ -190,7 +190,7 @@ const handler = async (req, res) => {
     // const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll/`, config);
     // const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll?items=${importId}`, config2);
     const pollResponse = await axios.get(`https://asanasandbox2.bynder.com/api/v4/upload/poll?items=${importId}`, config2);
-    console.log(`Received poll response as: ${JSON.stringify(pollResponse.data)}`);
+    // console.log(`Received poll response as: ${JSON.stringify(pollResponse.data)}`);
     return pollResponse;
   }
   let finishedProcessing = false;
@@ -200,8 +200,8 @@ const handler = async (req, res) => {
       pollResponse = await pollItems();
       finishedProcessing = (pollResponse.itemsFailed && pollResponse.itemsFailed.length)
       || (pollResponse.itemsRejected && pollResponse.itemsRejected.length)
-      || (pollResponse.itemsDone && pollResponse.itemsDone.length); 
-      await new Promise(r => setTimeout(r, 500));
+      || (pollResponse.itemsDone && pollResponse.itemsDone.length);
+      await new Promise(r => setTimeout(r, 200));
     }
   })();
   console.log(`Finished poll processing, current data is: ${pollResponse}`);
