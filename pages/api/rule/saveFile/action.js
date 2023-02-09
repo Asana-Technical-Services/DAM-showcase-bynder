@@ -174,7 +174,7 @@ const handler = async (req, res) => {
       Authorization: constants.bynderRequestHeaders.Authorization,
     },
   };
-  const pollResponse = await fetch(`${constants.bynderApiUrl}/v4/upload/poll?items=${importId}`, {
+  const pollResponse = await fetch(`https://asanasandbox2.bynder.com/api/v4/upload/poll?items=${importId}`, {
     method: 'GET',
     headers: {
       Authorization: constants.bynderRequestHeaders.Authorization,
