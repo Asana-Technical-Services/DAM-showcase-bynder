@@ -187,15 +187,17 @@ const handler = async (req, res) => {
     return pollResponse;
   }
   let finishedProcessing = false;
+  let pollResponse;
   (async () => {
     while (!finishedProcessing) {
-      const pollResponse = await pollItems();
+      pollResponse = await pollItems();
       finishedProcessing = pollResponse.itemsFailed
       || pollResponse.itemsRejected
       || pollResponse.itemsDone;
-      await new Promise(r => setTimeout(r, 2000));
+      await new Promise(r => setTimeout(r, 500));
     }
   })();
+  console.log(`Finished poll processing, current data is: ${pollResponse}`);
   return;
   //   h. Save as a new asset
   const assetDescription = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Description');
