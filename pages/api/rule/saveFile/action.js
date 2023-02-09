@@ -195,19 +195,17 @@ const handler = async (req, res) => {
   }
   let finishedProcessing = false;
   let pollResponse;
-  // await (async () => {
-  //   while (!finishedProcessing) {
-  //     pollResponse = await pollItems();
-  //     finishedProcessing = (pollResponse.itemsFailed && pollResponse.itemsFailed.length)
-  //     || (pollResponse.itemsRejected && pollResponse.itemsRejected.length)
-  //     || (pollResponse.itemsDone && pollResponse.itemsDone.length);
-  //     // await new Promise(r => setTimeout(r, 200));
-  //   }
-  // })();
-  pollResponse = await pollItems();
+  (async () => {
+    while (!finishedProcessing) {
+      pollResponse = await pollItems();
+      finishedProcessing = (pollResponse.itemsFailed && pollResponse.itemsFailed.length)
+      || (pollResponse.itemsRejected && pollResponse.itemsRejected.length)
+      || (pollResponse.itemsDone && pollResponse.itemsDone.length);
+      // await new Promise(r => setTimeout(r, 200));
+    }
+  })();
   console.log(`Finished poll processing, current data is: ${pollResponse}`);
   console.log('Attempintg to save the asset.');
-  return;
   //   h. Save as a new asset
   const assetDescription = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Description');
   const saveParams = {
