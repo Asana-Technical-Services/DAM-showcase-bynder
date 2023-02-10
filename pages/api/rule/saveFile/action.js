@@ -77,14 +77,14 @@ const handler = async (req, res) => {
   // 1. Get the closest Amazon S3 upload endpoint
   // const endpointResponse = await axios.get(`${constants.bynderApiUrl}/upload/endpoint`, bynderConfig);
   // const endpointUrl = endpointResponse && endpointResponse.data;
-  const endpointUrl = bynder.getUploadEndpoint();
+  const endpointUrl = await bynder.getUploadEndpoint();
 
   // 2. Initialize the upload
   const assetName = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Name');
   // const formData = getFormData({ filename: assetName });
   // const initResponse = await axios.post(`${constants.bynderApiUrl}/upload/init`, formData, bynderMultiPartConfig);
   // const params = initResponse && initResponse.data && initResponse.data.multipart_params;
-  const initializedData = bynder.initializeUpload(assetName);
+  const initializedData = await bynder.initializeUpload(assetName);
   if (!(initializedData && initializedData.multpart_params)) {
     res.status(200).json({
       error: 'Failed to initialize upload to Amazon S3 endpoint',
@@ -115,7 +115,7 @@ const handler = async (req, res) => {
 
   //   c. Upload the asset
   const assetDescription = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Description');
-  const { success, error } = bynder.uploadAsset(
+  const { success, error } = await bynder.uploadAsset(
     endpointUrl,
     initializedData,
     initializedData.multpart_params,
