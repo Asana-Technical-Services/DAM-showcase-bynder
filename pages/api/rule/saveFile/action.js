@@ -6,6 +6,7 @@ const axios = require('axios');
 const FormData = require('form-data');
 const constants = require('../../constants');
 const asanaUtils = require('../../../../utils/asana');
+const bynder = require('../../../../bynder');
 
 // Helper function to convert javascript objects to form data for axios requests
 function getFormData(object) {
@@ -61,31 +62,30 @@ const handler = async (req, res) => {
    * Bynder File upload process
    */
   // TODO: Add these steps into a separate module
-  const bynderConfig = {
-    headers: constants.bynderRequestHeaders,
-  };
-  const newFormData = new FormData();
-  const appendedHeaders = Object.assign(
-    constants.bynderMultiPartRequestHeaders,
-    newFormData.getHeaders(),
-  );
-  const bynderMultiPartConfig = {
-    headers: appendedHeaders,
-  };
+  // const bynderConfig = {
+  //   headers: constants.bynderRequestHeaders,
+  // };
+  // const newFormData = new FormData();
+  // const appendedHeaders = Object.assign(
+  //   constants.bynderMultiPartRequestHeaders,
+  //   newFormData.getHeaders(),
+  // );
+  // const bynderMultiPartConfig = {
+  //   headers: appendedHeaders,
+  // };
 
   // 1. Get the closest Amazon S3 upload endpoint
-  const endpointResponse = await axios.get(`${constants.bynderApiUrl}/upload/endpoint`, bynderConfig);
-  const endpointUrl = endpointResponse && endpointResponse.data;
-  console.log(`[DEBUG] Got endpoint url as: ${endpointUrl}`);
+  // const endpointResponse = await axios.get(`${constants.bynderApiUrl}/upload/endpoint`, bynderConfig);
+  // const endpointUrl = endpointResponse && endpointResponse.data;
+  const endpointUrl = bynder.getUploadEndpoint();
 
   // 2. Initialize the upload
   const assetName = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Name');
-  const formData = getFormData({ filename: assetName });
-  const initResponse = await axios.post(`${constants.bynderApiUrl}/upload/init`, formData, bynderMultiPartConfig);
-  const params = initResponse && initResponse.data && initResponse.data.multipart_params;
-  console.log(`[DEBUG] Got params as: ${JSON.stringify(params)}`);
-
-  if (!params) {
+  // const formData = getFormData({ filename: assetName });
+  // const initResponse = await axios.post(`${constants.bynderApiUrl}/upload/init`, formData, bynderMultiPartConfig);
+  // const params = initResponse && initResponse.data && initResponse.data.multipart_params;
+  const initializedData = bynder.initializeUpload(assetName);
+  if (!(initializedData && initializedData.multpart_params)) {
     res.status(200).json({
       error: 'Failed to initialize upload to Amazon S3 endpoint',
     });
@@ -95,6 +95,7 @@ const handler = async (req, res) => {
   // 3. Upload the file in chunks and register every uploaded chunk
   //   a. Get the Asana task attachment and download url
   const attachmentGid = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Attachment GID');
+  const assetDescription = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Description');
   // TODO: Handle if attachment gid is missing
 
   const attachmentResponse = await axios.get(`${constants.asanaApiUrl}/attachments/${attachmentGid}`, asanaConfig);
@@ -111,110 +112,120 @@ const handler = async (req, res) => {
 
   //   b. Download the file using Axios
   const imageResponse = await axios.get(downloadUrl, { responseType: 'arraybuffer' });
-  // const fileSize = imageResponse
-  // && imageResponse.headers && imageResponse.headers['content-length'];
   const imageData = imageResponse && imageResponse.data;
 
-  //   c. TODO: Separate file into buffer and separate into chunks if > 5MB
-  //      File sizes larger than 5GB need to be chunked
-
-  //   d. Call Bynder API to upload chunks
-  const appendedParams = params;
-  appendedParams.name = assetName;
-  appendedParams.chunk = 1;
-  appendedParams.chunks = 1;
-  appendedParams.Filename = params.key;
-  appendedParams.file = imageData;
-  const appendedParamsFormData = getFormData(appendedParams);
-  const uploadResponse = await axios.post(endpointUrl, appendedParamsFormData, {
-    headers: {
-      'content-length': appendedParamsFormData.getLengthSync(),
-    },
-  });
-  console.log(`Received upload response as: ${JSON.stringify(uploadResponse.data)}`);
-
-  //   e. Register the uploaded chunks
-  const uploadId = initResponse.data.s3file && initResponse.data.s3file.uploadid;
-  const targetid = initResponse.data.s3file && initResponse.data.s3file.targetid;
-  const chunkNumber = 1;
-  const filename = params.key;
-  const uploadParams = { chunkNumber, targetid, filename };
-  const registerResponse = await axios.post(
-    `${constants.bynderApiUrl}/v4/upload/${uploadId}`,
-    getFormData(uploadParams),
-    bynderMultiPartConfig,
+  //   c. Upload the asset
+  const { success, error } = bynder.uploadAsset(
+    endpointUrl,
+    initializedData,
+    initializedData.multpart_params,
+    imageData,
+    assetName,
+    assetDescription,
   );
-  console.log(`Received register response as: ${JSON.stringify(registerResponse.data)}`);
-
-  //   f. Finalize the completely uploaded file
-  const finalizeParams = {
-    targetid,
-    s3_filename: filename,
-    chunks: 1,
-    original_filename: assetName,
-  };
-  const finalizeResponse = await axios.post(
-    `${constants.bynderApiUrl}/v4/upload/${uploadId}`,
-    getFormData(finalizeParams),
-    bynderMultiPartConfig,
-  );
-  // TODO: Check that the response contains a success value of true
-  console.log(`Received finalize response as: ${JSON.stringify(finalizeResponse.data)}`);
-
-  //   g. Poll the state of the finalized files
-  const importId = finalizeResponse.data && finalizeResponse.data.importId;
-  console.log(`Received importId as: ${importId}`);
-
-  // TODO: Implement loop to handle making requests
-  // until itemsDone from the response matches items in query parameters
-  async function pollItems() {
-    const config = {
-      headers: {
-        Authorization: constants.bynderRequestHeaders.Authorization,
-      },
-    };
-    const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll?items=${importId}`, config);
-    console.log(`Received poll response as: ${JSON.stringify(pollResponse.data)}`);
-    return pollResponse.data;
-  }
-  let finishedProcessing = false;
-  let pollData;
-  let timeoutThreshold = 0;
-  while (!finishedProcessing) {
-    if (timeoutThreshold >= 40000) {
-      break;
-    }
-    pollData = await pollItems();
-    finishedProcessing = (pollData.itemsFailed && pollData.itemsFailed.length)
-    || (pollData.itemsRejected && pollData.itemsRejected.length)
-    || (pollData.itemsDone && pollData.itemsDone.length);
-    await new Promise(r => setTimeout(r, 200));
-    timeoutThreshold += 200;
-  }
-
-  if (!finishedProcessing) {
-    res.status(200).json({
-      error: 'No successfully processed image.',
-    });
+  if (!success) {
+    res.status(200).json({ error });
     return;
   }
-  console.log(`Finished poll processing, current data is: ${pollData}`);
-  console.log('Attempintg to save the asset.');
+  // //   c. TODO: Separate file into buffer and separate into chunks if > 5MB
+  // //      File sizes larger than 5GB need to be chunked
 
-  //   h. Save as a new asset
-  const assetDescription = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Description');
-  const saveParams = {
-    brandId: 'EC8550AE-87AD-4700-B2E26D459F6933C4',
-    name: assetName,
-    description: assetDescription,
-    tags: 'test-tag-1,test-tag-2', // TODO: Implement tag handling from Asana custom fields
-  };
-  const saveResponse = await axios.post(
-    `${constants.bynderApiUrl}/v4/media/save/${importId}`,
-    getFormData(saveParams),
-    bynderMultiPartConfig,
-  );
-  console.log(`Received save response as: ${JSON.stringify(saveResponse.data)}`);
+  // //   d. Call Bynder API to upload chunks
+  // const appendedParams = params;
+  // appendedParams.name = assetName;
+  // appendedParams.chunk = 1;
+  // appendedParams.chunks = 1;
+  // appendedParams.Filename = params.key;
+  // appendedParams.file = imageData;
+  // const appendedParamsFormData = getFormData(appendedParams);
+  // const uploadResponse = await axios.post(endpointUrl, appendedParamsFormData, {
+  //   headers: {
+  //     'content-length': appendedParamsFormData.getLengthSync(),
+  //   },
+  // });
+  // console.log(`Received upload response as: ${JSON.stringify(uploadResponse.data)}`);
+
+  // //   e. Register the uploaded chunks
+  // const uploadId = initResponse.data.s3file && initResponse.data.s3file.uploadid;
+  // const targetId = initResponse.data.s3file && initResponse.data.s3file.targetid;
+  // const chunkNumber = 1;
+  // const filename = params.key;
+  // const uploadParams = { chunkNumber, targetId, filename };
+  // const registerResponse = await axios.post(
+  //   `${constants.bynderApiUrl}/v4/upload/${uploadId}`,
+  //   getFormData(uploadParams),
+  //   bynderMultiPartConfig,
+  // );
+  // console.log(`Received register response as: ${JSON.stringify(registerResponse.data)}`);
+
+  // //   f. Finalize the completely uploaded file
+  // const finalizeParams = {
+  //   targetid,
+  //   s3_filename: filename,
+  //   chunks: 1,
+  //   original_filename: assetName,
+  // };
+  // const finalizeResponse = await axios.post(
+  //   `${constants.bynderApiUrl}/v4/upload/${uploadId}`,
+  //   getFormData(finalizeParams),
+  //   bynderMultiPartConfig,
+  // );
+  // // TODO: Check that the response contains a success value of true
+  // console.log(`Received finalize response as: ${JSON.stringify(finalizeResponse.data)}`);
+
+  // //   g. Poll the state of the finalized files
+  // const importId = finalizeResponse.data && finalizeResponse.data.importId;
+  // console.log(`Received importId as: ${importId}`);
+
+  // // TODO: Implement loop to handle making requests
+  // // until itemsDone from the response matches items in query parameters
+  // async function pollItems() {
+  //   const config = {
+  //     headers: {
+  //       Authorization: constants.bynderRequestHeaders.Authorization,
+  //     },
+  //   };
+  //   const pollResponse = await axios.get(`${constants.bynderApiUrl}/v4/upload/poll?items=${importId}`, config);
+  //   return pollResponse.data;
+  // }
+  // let finishedProcessing = false;
+  // let pollData;
+  // let timeoutThreshold = 0;
+  // while (!finishedProcessing) {
+  //   if (timeoutThreshold >= 40000) {
+  //     break;
+  //   }
+  //   pollData = await pollItems();
+  //   finishedProcessing = (pollData.itemsFailed && pollData.itemsFailed.length)
+  //   || (pollData.itemsRejected && pollData.itemsRejected.length)
+  //   || (pollData.itemsDone && pollData.itemsDone.length);
+  //   await new Promise(r => setTimeout(r, 200));
+  //   timeoutThreshold += 200;
+  // }
+
+  // if (!finishedProcessing) {
+  //   res.status(200).json({
+  //     error: 'No successfully processed image.',
+  //   });
+  //   return;
+  // }
+  // console.log(`Finished poll processing, current data is: ${pollData}`);
+  // console.log('Attempintg to save the asset.');
+
+  // //   h. Save as a new asset
+  // const assetDescription = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Description');
+  // const saveParams = {
+  //   brandId: 'EC8550AE-87AD-4700-B2E26D459F6933C4',
+  //   name: assetName,
+  //   description: assetDescription,
+  //   tags: 'test-tag-1,test-tag-2', // TODO: Implement tag handling from Asana custom fields
+  // };
+  // const saveResponse = await axios.post(
+  //   `${constants.bynderApiUrl}/v4/media/save/${importId}`,
+  //   getFormData(saveParams),
+  //   bynderMultiPartConfig,
+  // );
+  // console.log(`Received save response as: ${JSON.stringify(saveResponse.data)}`);
 
   res.status(200).json({
     action_result: 'ok',
