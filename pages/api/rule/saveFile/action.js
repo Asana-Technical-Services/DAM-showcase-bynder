@@ -78,6 +78,7 @@ const handler = async (req, res) => {
   // const endpointResponse = await axios.get(`${constants.bynderApiUrl}/upload/endpoint`, bynderConfig);
   // const endpointUrl = endpointResponse && endpointResponse.data;
   const endpointUrl = await bynder.getUploadEndpoint();
+  console.log('[DEBUG] Got here A');
 
   // 2. Initialize the upload
   const assetName = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Name');
@@ -91,6 +92,7 @@ const handler = async (req, res) => {
     });
     return;
   }
+  console.log('[DEBUG] Got here B');
 
   // 3. Upload the file in chunks and register every uploaded chunk
   //   a. Get the Asana task attachment and download url
@@ -108,6 +110,7 @@ const handler = async (req, res) => {
     return;
   }
   const downloadUrl = attachmentData.download_url;
+  console.log('[DEBUG] Got here C');
 
   //   b. Download the file using Axios
   const imageResponse = await axios.get(downloadUrl, { responseType: 'arraybuffer' });
@@ -127,6 +130,8 @@ const handler = async (req, res) => {
     res.status(200).json({ error });
     return;
   }
+  console.log('[DEBUG] Got here D');
+
   // //   c. TODO: Separate file into buffer and separate into chunks if > 5MB
   // //      File sizes larger than 5GB need to be chunked
 
