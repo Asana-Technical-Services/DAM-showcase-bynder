@@ -95,7 +95,6 @@ const handler = async (req, res) => {
   // 3. Upload the file in chunks and register every uploaded chunk
   //   a. Get the Asana task attachment and download url
   const attachmentGid = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Attachment GID');
-  const assetDescription = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Description');
   // TODO: Handle if attachment gid is missing
 
   const attachmentResponse = await axios.get(`${constants.asanaApiUrl}/attachments/${attachmentGid}`, asanaConfig);
@@ -115,6 +114,7 @@ const handler = async (req, res) => {
   const imageData = imageResponse && imageResponse.data;
 
   //   c. Upload the asset
+  const assetDescription = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Description');
   const { success, error } = bynder.uploadAsset(
     endpointUrl,
     initializedData,

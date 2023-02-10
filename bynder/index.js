@@ -32,7 +32,8 @@ async function initializeUpload(assetName) {
   // const assetName = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Name');
   const formData = getFormData({ filename: assetName });
   const response = await axios.post(`${constants.bynderApiUrl}/upload/init`, formData, multipartConfig);
-  return response && response.data;
+  const responseData = response && response.data;
+  return responseData;
 }
 
 async function uploadChunks(endpointUrl, multipartParams, imageData, assetName) {
@@ -50,7 +51,8 @@ async function uploadChunks(endpointUrl, multipartParams, imageData, assetName) 
     },
   });
   console.log(`Received upload response as: ${JSON.stringify(response.data)}`);
-  return response && response.data;
+  const responseData = response && response.data;
+  return responseData;
 }
 
 async function registerUploadedChunks(uploadId, targetId, filename) {
@@ -61,7 +63,8 @@ async function registerUploadedChunks(uploadId, targetId, filename) {
     multipartConfig,
   );
   console.log(`Received register response as: ${JSON.stringify(response.data)}`);
-  return response && response.data;
+  const responseData = response && response.data;
+  return responseData;
 }
 
 async function finalizeUploadedFile(uploadId, targetId, filename, assetName) {
@@ -78,7 +81,8 @@ async function finalizeUploadedFile(uploadId, targetId, filename, assetName) {
   );
   // TODO: Check that the response contains a success value of true
   console.log(`Received finalize response as: ${JSON.stringify(response.data)}`);
-  return response && response.data;
+  const responseData = response && response.data;
+  return responseData;
 }
 
 async function pollFinalizedFiles(importId) {
@@ -122,7 +126,8 @@ async function saveNewAsset(importId, assetName, description) {
     multipartConfig,
   );
   console.log(`Received save response as: ${JSON.stringify(response.data)}`);
-  return response.data;
+  const responseData = response && response.data;
+  return responseData;
 }
 
 async function uploadAsset(
