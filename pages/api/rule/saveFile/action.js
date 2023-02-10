@@ -79,7 +79,7 @@ const handler = async (req, res) => {
   // const endpointUrl = endpointResponse && endpointResponse.data;
   const endpointUrl = await bynder.getUploadEndpoint();
   console.log('[DEBUG] Got here A');
-
+  return;
   // 2. Initialize the upload
   const assetName = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Name');
   // const formData = getFormData({ filename: assetName });
