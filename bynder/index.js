@@ -1,4 +1,5 @@
 const axios = require('axios');
+const FormData = require('form-data');
 const constants = require('constants');
 
 const config = {

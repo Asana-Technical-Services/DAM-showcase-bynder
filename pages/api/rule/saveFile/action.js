@@ -3,18 +3,18 @@
  * API for the AppComponent triggered rule action.
  */
 const axios = require('axios');
-const FormData = require('form-data');
+// const FormData = require('form-data');
 const constants = require('../../constants');
 const asanaUtils = require('../../../../utils/asana');
 const bynder = require('../../../../bynder');
 
 // Helper function to convert javascript objects to form data for axios requests
-function getFormData(object) {
-  return Object.keys(object).reduce((formData, key) => {
-    formData.append(key, object[key]);
-    return formData;
-  }, new FormData());
-}
+// function getFormData(object) {
+//   return Object.keys(object).reduce((formData, key) => {
+//     formData.append(key, object[key]);
+//     return formData;
+//   }, new FormData());
+// }
 
 const handler = async (req, res) => {
   console.log('[DEBUG] Running handler for action route.');
