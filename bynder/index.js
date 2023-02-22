@@ -1,15 +1,17 @@
 const axios = require('axios');
 const FormData = require('form-data');
-const constants = require('constants');
+const constants = require('../pages/api/constants');
 
 const config = {
   headers: constants.bynderRequestHeaders,
 };
+
 const newFormData = new FormData();
 const appendedHeaders = Object.assign(
   constants.bynderMultiPartRequestHeaders,
   newFormData.getHeaders(),
 );
+
 const multipartConfig = {
   headers: appendedHeaders,
 };

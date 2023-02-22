@@ -25,7 +25,7 @@ const handler = async (req, res) => {
     });
     return;
   }
-  return;
+
   let dataParsed;
   try {
     dataParsed = JSON.parse(data);
