@@ -36,7 +36,7 @@ const handler = async (req, res) => {
 
   const targetObj = dataParsed.target_object;
   console.log(`[DEBUG] Got target object for trigger as: ${targetObj}`);
-
+  return;
   // Get the task data to determine task type and fetch custom fields
   const asanaConfig = {
     headers: constants.asanaRequestHeaders,
@@ -79,7 +79,7 @@ const handler = async (req, res) => {
   // const endpointUrl = endpointResponse && endpointResponse.data;
   const endpointUrl = await bynder.getUploadEndpoint();
   console.log('[DEBUG] Got here A');
-  return;
+
   // 2. Initialize the upload
   const assetName = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Name');
   // const formData = getFormData({ filename: assetName });
