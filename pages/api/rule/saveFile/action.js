@@ -79,7 +79,7 @@ const handler = async (req, res) => {
   // const endpointUrl = endpointResponse && endpointResponse.data;
   const endpointUrl = await bynder.getUploadEndpoint();
   console.log('[DEBUG] Got here A');
-  return;
+
   // 2. Initialize the upload
   const assetName = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Name');
   // const formData = getFormData({ filename: assetName });
@@ -93,6 +93,7 @@ const handler = async (req, res) => {
     return;
   }
   console.log('[DEBUG] Got here B');
+  return;
 
   // 3. Upload the file in chunks and register every uploaded chunk
   //   a. Get the Asana task attachment and download url
