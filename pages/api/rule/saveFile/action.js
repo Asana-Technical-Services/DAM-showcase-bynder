@@ -25,7 +25,7 @@ const handler = async (req, res) => {
     });
     return;
   }
-
+  return;
   let dataParsed;
   try {
     dataParsed = JSON.parse(data);
@@ -36,7 +36,7 @@ const handler = async (req, res) => {
 
   const targetObj = dataParsed.target_object;
   console.log(`[DEBUG] Got target object for trigger as: ${targetObj}`);
-  return;
+
   // Get the task data to determine task type and fetch custom fields
   const asanaConfig = {
     headers: constants.asanaRequestHeaders,
