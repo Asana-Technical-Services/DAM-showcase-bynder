@@ -4,7 +4,7 @@
  * API for the AppComponent modal form submit action.
  */
 const axios = require('axios');
-const constants = require('../constants');
+const constants = require('../../../constants');
 
 const PROJECT_DAM_ASSETS_REVIEW = process.env.ASANA_PROJECT_DAM_ASSETS_REVIEW;
 const PROJECT_DAM_ASSETS_REVIEW_CF_TEAM = process.env.ASANA_PROJECT_DAM_ASSETS_REVIEW_CF_TEAM;

@@ -5,7 +5,7 @@
  * Retrieves the existing attachments for the Asana Task
  */
 const axios = require('axios');
-const constants = require('../constants');
+const constants = require('../../../constants');
 
 const PROJECT_DAM_ASSETS_REVIEW_CF_TEAM_MARKETING = process.env.ASANA_PROJECT_DAM_ASSETS_REVIEW_CF_TEAM_MARKETING;
 const PROJECT_DAM_ASSETS_REVIEW_CF_TEAM_SALES = process.env.ASANA_PROJECT_DAM_ASSETS_REVIEW_CF_TEAM_SALES;

@@ -103,7 +103,7 @@ async function pollFinalizedFiles(importId) {
     finishedProcessing = (pollData.itemsFailed && pollData.itemsFailed.length)
       || (pollData.itemsRejected && pollData.itemsRejected.length)
       || (pollData.itemsDone && pollData.itemsDone.length);
-    // eslint-disable-next-line no-await-in-loop
+    // eslint-disable-next-line no-await-in-loop, no-promise-executor-return
     await new Promise((r) => setTimeout(r, DELAY));
     timeoutThreshold += 200;
   }
