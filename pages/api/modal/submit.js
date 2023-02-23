@@ -32,10 +32,9 @@ const handler = async (req, res) => {
 
   // Retrieve selected data from AppComponent Modal: attachment ID, team ID
   const { values } = dataParsed;
-  const attachmentId = values.dropdown_half_width_1;
-  const teamId = values.dropdown_half_width_2;
-  // const name = values.single_line_text_full_width_1;
-  const description = values.single_line_text_full_width_2;
+  const attachmentId = values && values.dropdown_half_width_1;
+  const teamId = values && values.dropdown_half_width_2;
+  const description = values && values.single_line_text_full_width_2;
 
   if (!attachmentId || !teamId) {
     res.status(200).json({
@@ -83,7 +82,7 @@ const handler = async (req, res) => {
     throw new Error(error);
   });
 
-  // Update task: add task to project "DAM Assets Review"
+  // Update task: add task to review project
   await axios.post(`${constants.asanaApiUrl}/tasks/${taskData.gid}/addProject`, {
     data: {
       project: PROJECT_DAM_ASSETS_REVIEW,

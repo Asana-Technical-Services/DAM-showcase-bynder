@@ -125,7 +125,7 @@ const handler = async (req, res) => {
   }
 
   const resourceUrl = query.resource_url;
-  const isBynderAsset = resourceUrl && resourceUrl.includes('asanasandbox2.bynder.com');
+  const isBynderAsset = resourceUrl && resourceUrl.includes('.bynder.com');
   const isAsanaAttachment = resourceUrl && resourceUrl.includes('app.asana.com');
 
   if (!isBynderAsset && !isAsanaAttachment) {
