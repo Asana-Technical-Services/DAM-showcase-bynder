@@ -149,6 +149,8 @@ async function uploadAsset(
     error = `Failed to upload chunk data to <${endpointUrl}>`;
     return { success, error };
   }
+  console.log(`[DEBUG] Initialized Data: ${initializedData}`);
+  return;
   const uploadId = initializedData.s3_file && initializedData.s3_file.uploadid;
   const targetId = initializedData.s3_file && initializedData.s3_file.targetid;
   const filename = multipartParams.key;
