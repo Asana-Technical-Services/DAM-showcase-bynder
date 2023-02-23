@@ -50,7 +50,8 @@ async function uploadChunks(endpointUrl, multipartParams, imageData, assetName) 
       'content-length': paramsFormData.getLengthSync(),
     },
   });
-  console.log(`Received upload response as: ${JSON.stringify(response.data)}`);
+  // console.log(`Received upload response as: ${JSON.stringify(response.data)}`);
+  console.log(`Received upload response as: ${response.data}`);
   const responseData = response && response.data;
   return responseData;
 }
