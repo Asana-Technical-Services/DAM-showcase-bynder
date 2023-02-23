@@ -32,9 +32,6 @@ async function getUploadEndpoint() {
 async function initializeUpload(assetName) {
   const formData = getFormData({ filename: assetName });
   const response = await axios.post(`${constants.bynderApiUrl}/upload/init`, formData, multipartConfig);
-  console.log(response);
-  console.log(response.data);
-  return;
   const responseData = response && response.data;
   return responseData;
 }
