@@ -34,6 +34,7 @@ const handler = async (req, res) => {
   const { values } = dataParsed;
   const attachmentId = values && values.dropdown_half_width_1;
   const teamId = values && values.dropdown_half_width_2;
+  const fileName = values && values.single_line_text_full_width_1
   const description = values && values.single_line_text_full_width_2;
 
   if (!attachmentId || !teamId) {
@@ -97,7 +98,7 @@ const handler = async (req, res) => {
   // Consider capturing file extension and appending to new name
   const customFields = {};
   customFields[PROJECT_DAM_ASSETS_REVIEW_CF_TEAM] = teamId;
-  customFields[PROJECT_DAM_ASSETS_REVIEW_CF_NAME] = attachmentName;
+  customFields[PROJECT_DAM_ASSETS_REVIEW_CF_NAME] = fileName;
   customFields[PROJECT_DAM_ASSETS_REVIEW_CF_DESCRIPTION] = description;
   customFields[PROJECT_DAM_ASSETS_REVIEW_CF_GID] = attachmentGid;
   await axios.put(`${constants.asanaApiUrl}/tasks/${taskData.gid}`, {
