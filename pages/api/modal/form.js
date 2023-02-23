@@ -58,13 +58,12 @@ const handler = async (req, res) => {
       submit_button_text: 'Submit',
       fields: [
         {
-          type: 'single_line_text',
-          id: 'single_line_text_full_width_1',
-          name: 'File name',
-          value: '',
+          type: 'dropdown',
+          id: 'dropdown_half_width_1',
+          name: 'Select a file',
           is_required: true,
-          placeholder: '',
-          width: 'full',
+          options: files,
+          width: 'half',
         },
         {
           type: 'single_line_text',
@@ -74,14 +73,6 @@ const handler = async (req, res) => {
           is_required: true,
           placeholder: 'Enter a short but effective description for the asset',
           width: 'full',
-        },
-        {
-          type: 'dropdown',
-          id: 'dropdown_half_width_1',
-          name: 'Select a file',
-          is_required: true,
-          options: files,
-          width: 'half',
         },
         {
           type: 'dropdown',

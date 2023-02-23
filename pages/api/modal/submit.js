@@ -34,7 +34,7 @@ const handler = async (req, res) => {
   const { values } = dataParsed;
   const attachmentId = values && values.dropdown_half_width_1;
   const teamId = values && values.dropdown_half_width_2;
-  const fileName = values && values.single_line_text_full_width_1
+  const fileName = values && values.single_line_text_full_width_1;
   const description = values && values.single_line_text_full_width_2;
 
   if (!attachmentId || !teamId) {
