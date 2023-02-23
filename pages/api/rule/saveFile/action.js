@@ -17,7 +17,6 @@ const bynder = require('../../../../bynder');
 // }
 
 const handler = async (req, res) => {
-  console.log('[DEBUG] Running handler for action route.');
   const { data } = req.body;
   if (!data) {
     res.status(200).json({
@@ -35,7 +34,6 @@ const handler = async (req, res) => {
   }
 
   const targetObj = dataParsed.target_object;
-  console.log(`[DEBUG] Got target object for trigger as: ${targetObj}`);
 
   // Get the task data to determine task type and fetch custom fields
   const asanaConfig = {
@@ -86,6 +84,7 @@ const handler = async (req, res) => {
   // const initResponse = await axios.post(`${constants.bynderApiUrl}/upload/init`, formData, bynderMultiPartConfig);
   // const params = initResponse && initResponse.data && initResponse.data.multipart_params;
   const initializedData = await bynder.initializeUpload(assetName);
+  return
   if (!(initializedData && initializedData.multpart_params)) {
     res.status(200).json({
       error: 'Failed to initialize upload to Amazon S3 endpoint',
@@ -244,4 +243,5 @@ const handler = async (req, res) => {
     ],
   });
 };
+
 module.exports = handler;

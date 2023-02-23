@@ -11,7 +11,6 @@ const appendedHeaders = Object.assign(
   constants.bynderMultiPartRequestHeaders,
   newFormData.getHeaders(),
 );
-
 const multipartConfig = {
   headers: appendedHeaders,
 };
@@ -31,8 +30,9 @@ async function getUploadEndpoint() {
 }
 
 async function initializeUpload(assetName) {
-  // const assetName = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Name');
   const formData = getFormData({ filename: assetName });
+  console.log(formData);
+  return;
   const response = await axios.post(`${constants.bynderApiUrl}/upload/init`, formData, multipartConfig);
   const responseData = response && response.data;
   return responseData;
