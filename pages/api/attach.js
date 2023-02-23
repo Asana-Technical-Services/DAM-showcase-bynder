@@ -3,7 +3,6 @@
  * API for the AppComponent attachment function.
  * Returns an asset url for the desired asset ID.
  */
-
 const axios = require('axios');
 const constants = require('../../constants');
 

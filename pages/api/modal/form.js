@@ -35,16 +35,16 @@ async function getAttachmentsForTask(taskGid) {
 const handler = async (req, res) => {
   // Check query and return if task GID not found
   const { query } = req;
-  const taskID = query.task;
-  if (!taskID) {
+  const taskId = query.task;
+  if (!taskId) {
     res.status(200).json({
-      // "error": "No resource matched that input",
+      error: `No resource matched input for task ID: ${taskId}`,
     });
     return;
   }
 
   // Get available attachments for the desired task
-  const files = await getAttachmentsForTask(taskID).catch((error) => {
+  const files = await getAttachmentsForTask(taskId).catch((error) => {
     console.log(error);
     throw new Error(error);
   });
@@ -54,7 +54,7 @@ const handler = async (req, res) => {
     template: 'form_metadata_v0',
     metadata: {
       title: 'Review new file',
-      on_submit_callback: 'https://dam-showcase-andrew-git-dam-showcase-update-andrew-asana.vercel.app/api/modal/submit',
+      on_submit_callback: `${constants.vercelUrl}/api/modal/submit`,
       submit_button_text: 'Submit',
       fields: [
         {
