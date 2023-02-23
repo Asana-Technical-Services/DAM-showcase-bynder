@@ -58,7 +58,8 @@ async function uploadChunks(endpointUrl, multipartParams, imageData, assetName) 
 async function registerUploadedChunks(uploadId, targetId, filename) {
   const chunkNumber = 1;
   const uploadParams = { chunkNumber, targetId, filename };
-  const response = await axios.post(`${constants.bynderApiUrl}/v4/upload/${uploadId}`,
+  const response = await axios.post(
+    `${constants.bynderApiUrl}/v4/upload/${uploadId}`,
     getFormData(uploadParams),
     multipartConfig,
   );

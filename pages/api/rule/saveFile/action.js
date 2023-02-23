@@ -107,7 +107,6 @@ const handler = async (req, res) => {
     return;
   }
   const downloadUrl = attachmentData.download_url;
-  console.log('[DEBUG] Got here C');
 
   //   b. Download the file using Axios
   const imageResponse = await axios.get(downloadUrl, { responseType: 'arraybuffer' });
@@ -127,6 +126,8 @@ const handler = async (req, res) => {
     res.status(200).json({ error });
     return;
   }
+  console.log(`[DEBUG] success: ${success}`);
+  console.log(`[DEBUG] error: ${error}`);
   console.log('[DEBUG] Got here D');
 
   // //   c. TODO: Separate file into buffer and separate into chunks if > 5MB
