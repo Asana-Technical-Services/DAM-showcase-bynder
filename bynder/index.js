@@ -159,14 +159,14 @@ async function uploadAsset(
     return { success, error };
   }
   // c. Finalize the completely uploaded file
-  const finalizedData = await finalizeUploadedFile(uploadid, targetid, filename);
+  const finalizedData = await finalizeUploadedFile(uploadid, targetid, filename, assetName);
   if (!finalizedData) {
     error = `Failed to finalize uploaded file <${filename}>`;
     return { success, error };
   }
   const importId = finalizedData && finalizedData.importId;
   // d. Poll the state of the finalized files
-  const finishedProcessing =await  pollFinalizedFiles(importId);
+  const finishedProcessing = await pollFinalizedFiles(importId);
   if (!finishedProcessing) {
     error = `Failed to successfully process and poll finalized items for import ID <${importId}>`;
     return { success, error };
