@@ -149,11 +149,8 @@ async function uploadAsset(
     error = `Failed to upload chunk data to <${endpointUrl}>`;
     return { success, error };
   }
-  // console.log(`[DEBUG] Initialized Data: ${JSON.stringify(initializedData)}`);
-  console.log(`[DEBUG] Initialized s3 file: ${JSON.stringify(initializedData.s3_file)}`);
-  return;
-  const uploadId = initializedData.s3_file && initializedData.s3_file.uploadid;
-  const targetId = initializedData.s3_file && initializedData.s3_file.targetid;
+  const uploadId = initializedData.s3file && initializedData.s3file.uploadid;
+  const targetId = initializedData.s3file && initializedData.s3file.targetid;
   const filename = multipartParams.key;
   // b. Register the uploaded chunks
   const registeredChunkData = await registerUploadedChunks(uploadId, targetId, filename);
