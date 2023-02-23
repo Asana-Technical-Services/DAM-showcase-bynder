@@ -8,15 +8,11 @@ const handler = (req, res) => {
       metadata: {
         on_submit_callback: `${constants.vercelUrl}/api/rule/saveFile/submit`,
         fields: [
-          // {
-          //   type: 'single_line_text',
-          //   id: 'single_line_text_full_width',
-          //   name: 'Folder',
-          //   value: '',
-          //   is_required: true,
-          //   placeholder: 'Path where the file will be saved for review',
-          //   width: 'full',
-          // },
+          {
+            name: 'Save the attached Bynder asset to the Bynder workspace Assets folder.',
+            type: 'static_text',
+            id: 'static_text',
+          },
         ],
       },
     },
