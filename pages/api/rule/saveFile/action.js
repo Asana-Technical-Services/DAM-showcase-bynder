@@ -83,7 +83,7 @@ const handler = async (req, res) => {
   // const initResponse = await axios.post(`${constants.bynderApiUrl}/upload/init`, formData, bynderMultiPartConfig);
   // const params = initResponse && initResponse.data && initResponse.data.multipart_params;
   const initializedData = await bynder.initializeUpload(assetName);
-  if (!initializedData) {
+  if (!initializedData || !initializedData.multipart_params) {
     res.status(200).json({
       error: 'Failed to initialize upload to Amazon S3 endpoint',
     });
@@ -118,7 +118,7 @@ const handler = async (req, res) => {
   const { success, error } = await bynder.uploadAsset(
     endpointUrl,
     initializedData,
-    initializedData.multpart_params,
+    initializedData.multipart_params,
     imageData,
     assetName,
     assetDescription,
