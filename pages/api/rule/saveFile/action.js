@@ -34,9 +34,11 @@ const handler = async (req, res) => {
     opt_fields=resource_subtype,custom_fields.name,custom_fields.display_value`, asanaConfig);
   const taskData = tasksResponse && tasksResponse.data && tasksResponse.data.data;
   const isApprovalTask = taskData && taskData.resource_subtype === 'approval';
+  const assetName = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Name');
+  const attachmentGid = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Attachment GID');
 
   // Return if this isn't an approval task
-  if (!isApprovalTask) {
+  if (!isApprovalTask || !assetName || !attachmentGid) {
     res.status(200).json({
       error: 'Missing correct task data for save file',
     });
@@ -50,7 +52,6 @@ const handler = async (req, res) => {
   const endpointUrl = await bynder.getUploadEndpoint();
 
   // 2. Initialize the upload
-  const assetName = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Name');
   const initializedData = await bynder.initializeUpload(assetName);
   if (!initializedData || !initializedData.multipart_params) {
     res.status(200).json({
@@ -60,7 +61,6 @@ const handler = async (req, res) => {
   }
   // 3. Upload the file in chunks and register every uploaded chunk
   //   a. Get the Asana task attachment and download url
-  const attachmentGid = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Attachment GID');
   const attachmentResponse = await axios.get(`${constants.asanaApiUrl}/attachments/${attachmentGid}`, asanaConfig);
   const attachmentData = attachmentResponse
     && attachmentResponse.data
