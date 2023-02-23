@@ -7,8 +7,9 @@ const asanaKey = process.env.ASANA_TOKEN;
 // Bynder token for API requests
 const bynderKey = process.env.BYNDER_TOKEN;
 
-// Base URL for Bynder API
-const bynderApiUrl = process.env.BYNDER_API_URL;
+// Base URL for Bynder API and domain
+const bynderUrl = process.env.BYNDER_URL;
+const bynderApiUrl = `${bynderUrl}/api`;
 
 // Base URL for Vercel App
 const vercelUrl = process.env.VERCEL_URL;
@@ -37,6 +38,7 @@ module.exports = {
   vercelUrl,
   asanaApiUrl,
   bynderApiUrl,
+  bynderUrl,
   asanaRequestHeaders,
   bynderRequestHeaders,
   bynderMultiPartRequestHeaders,

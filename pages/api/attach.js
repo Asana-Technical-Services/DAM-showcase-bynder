@@ -35,7 +35,7 @@ const handler = async (req, res) => {
     return;
   }
   const name = response.data && response.data.name;
-  const mediaLink = `https://asanasandbox2.bynder.com/media?mediaId=${id}`;
+  const mediaLink = `${constants.bynderUrl}/media?mediaId=${id}`;
 
   // Return resource to App Component
   const resource = {
