@@ -50,7 +50,7 @@ const handler = async (req, res) => {
   });
 
   // Create AppComponent form metadata
-  const callbackUrl = `${constants.vercelUrl}/api/modal/submit`;
+  const callbackUrl = `https://${constants.vercelUrl}/api/modal/submit`;
   console.log(`[DEBUG] Callback url: ${callbackUrl}`);
   const form = {
     template: 'form_metadata_v0',
