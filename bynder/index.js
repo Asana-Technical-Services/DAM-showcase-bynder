@@ -1,6 +1,6 @@
 const axios = require('axios');
 const FormData = require('form-data');
-const constants = require('../pages/api/constants');
+const constants = require('../constants');
 
 const config = {
   headers: constants.bynderRequestHeaders,
@@ -50,8 +50,6 @@ async function uploadChunks(endpointUrl, multipartParams, imageData, assetName) 
       'content-length': paramsFormData.getLengthSync(),
     },
   });
-  // console.log(`Received upload response as: ${JSON.stringify(response.data)}`);
-  console.log(`Received upload response as: ${response.data}`);
   const responseData = response && response.data;
   return responseData;
 }
@@ -64,7 +62,6 @@ async function registerUploadedChunks(uploadid, targetid, filename) {
     getFormData(uploadParams),
     multipartConfig,
   );
-  console.log(`Received register response as: ${JSON.stringify(response.data)}`);
   const responseData = response && response.data;
   return responseData;
 }
@@ -81,8 +78,6 @@ async function finalizeUploadedFile(uploadid, targetid, filename, assetName) {
     getFormData(params),
     multipartConfig,
   );
-  // TODO: Check that the response contains a success value of true
-  console.log(`Received finalize response as: ${JSON.stringify(response.data)}`);
   const responseData = response && response.data;
   return responseData;
 }
@@ -117,17 +112,16 @@ async function pollFinalizedFiles(importId) {
 
 async function saveNewAsset(importId, assetName, description) {
   const params = {
-    brandId: 'EC8550AE-87AD-4700-B2E26D459F6933C4',
+    brandId: 'EC8550AE-87AD-4700-B2E26D459F6933C4', // TODO: handle and get brandID of specific Bynder instance
     name: assetName,
     description,
-    tags: 'test-tag-1,test-tag-2', // TODO: Implement tag handling from Asana custom fields
+    tags: 'asana-upload', // TODO: Implement tag handling from Asana custom fields
   };
   const response = await axios.post(
     `${constants.bynderApiUrl}/v4/media/save/${importId}`,
     getFormData(params),
     multipartConfig,
   );
-  console.log(`Received save response as: ${JSON.stringify(response.data)}`);
   const responseData = response && response.data;
   return responseData;
 }

@@ -5,7 +5,7 @@
  */
 
 const axios = require('axios');
-const constants = require('./constants');
+const constants = require('../../constants');
 
 const handler = async (req, res) => {
   // Check body and return if empty
@@ -42,7 +42,7 @@ const handler = async (req, res) => {
   // Return resource to App Component
   const resource = {
     resource_name: name,
-    resource_url: mediaLink,
+    resource_url: mediaLink, 
   };
   res.status(200).json(resource);
 };

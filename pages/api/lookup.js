@@ -4,7 +4,7 @@
  */
 
 const axios = require('axios');
-const constants = require('./constants');
+const constants = require('../../constants');
 
 async function convertAssetsToList(assets) {
   const assetsList = assets.reduce((result, currentValue) => {

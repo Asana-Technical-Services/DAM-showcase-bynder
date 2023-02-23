@@ -7,7 +7,7 @@
 import { filesize } from 'filesize';
 
 const axios = require('axios');
-const constants = require('./constants');
+const constants = require('../../constants');
 
 async function handleBynderAsset(resourceUrl) {
   // Get the Bynder asset to access fields for resource metadata
