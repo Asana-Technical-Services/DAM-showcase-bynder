@@ -56,11 +56,11 @@ async function uploadChunks(endpointUrl, multipartParams, imageData, assetName) 
   return responseData;
 }
 
-async function registerUploadedChunks(uploadId, targetId, filename) {
+async function registerUploadedChunks(uploadid, targetid, filename) {
   const chunkNumber = 1;
-  const uploadParams = { chunkNumber, targetId, filename };
+  const uploadParams = { chunkNumber, targetid, filename };
   const response = await axios.post(
-    `${constants.bynderApiUrl}/v4/upload/${uploadId}`,
+    `${constants.bynderApiUrl}/v4/upload/${uploadid}`,
     getFormData(uploadParams),
     multipartConfig,
   );
@@ -69,15 +69,15 @@ async function registerUploadedChunks(uploadId, targetId, filename) {
   return responseData;
 }
 
-async function finalizeUploadedFile(uploadId, targetId, filename, assetName) {
+async function finalizeUploadedFile(uploadid, targetid, filename, assetName) {
   const params = {
-    targetId,
+    targetid,
     s3_filename: filename,
     chunks: 1,
     original_filename: assetName,
   };
   const response = await axios.post(
-    `${constants.bynderApiUrl}/v4/upload/${uploadId}`,
+    `${constants.bynderApiUrl}/v4/upload/${uploadid}`,
     getFormData(params),
     multipartConfig,
   );
@@ -149,18 +149,18 @@ async function uploadAsset(
     error = `Failed to upload chunk data to <${endpointUrl}>`;
     return { success, error };
   }
-  const uploadId = initializedData.s3file && initializedData.s3file.uploadid;
-  const targetId = initializedData.s3file && initializedData.s3file.targetid;
+  const uploadid = initializedData.s3file && initializedData.s3file.uploadid;
+  const targetid = initializedData.s3file && initializedData.s3file.targetid;
   const filename = multipartParams.key;
   // b. Register the uploaded chunks
-  const registeredChunkData = await registerUploadedChunks(uploadId, targetId, filename);
+  const registeredChunkData = await registerUploadedChunks(uploadid, targetid, filename);
   if (!registeredChunkData) {
     error = `Failed to register uploaded chunk data for file <${filename}>`;
     return { success, error };
   }
   // c. Finalize the completely uploaded file
-  const finalizedData = await finalizeUploadedFile(uploadId, targetId, filename);
-  if (!registeredChunkData) {
+  const finalizedData = await finalizeUploadedFile(uploadid, targetid, filename);
+  if (!finalizedData) {
     error = `Failed to finalize uploaded file <${filename}>`;
     return { success, error };
   }
