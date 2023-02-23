@@ -143,7 +143,7 @@ async function uploadAsset(
   let error = '';
 
   // a. Call Bynder API to upload chunks
-  const uploadedChunkData = uploadChunks(endpointUrl, multipartParams, imageData, assetName);
+  const uploadedChunkData = await uploadChunks(endpointUrl, multipartParams, imageData, assetName);
   if (!uploadedChunkData) {
     error = `Failed to upload chunk data to <${endpointUrl}>`;
     return { success, error };
@@ -152,26 +152,26 @@ async function uploadAsset(
   const targetId = initializedData.s3_file && initializedData.s3_file.targetid;
   const filename = multipartParams.key;
   // b. Register the uploaded chunks
-  const registeredChunkData = registerUploadedChunks(uploadId, targetId, filename);
+  const registeredChunkData = await registerUploadedChunks(uploadId, targetId, filename);
   if (!registeredChunkData) {
     error = `Failed to register uploaded chunk data for file <${filename}>`;
     return { success, error };
   }
   // c. Finalize the completely uploaded file
-  const finalizedData = finalizeUploadedFile(uploadId, targetId, filename);
+  const finalizedData = await finalizeUploadedFile(uploadId, targetId, filename);
   if (!registeredChunkData) {
     error = `Failed to finalize uploaded file <${filename}>`;
     return { success, error };
   }
   const importId = finalizedData && finalizedData.importId;
   // d. Poll the state of the finalized files
-  const finishedProcessing = pollFinalizedFiles(importId);
+  const finishedProcessing =await  pollFinalizedFiles(importId);
   if (!finishedProcessing) {
     error = `Failed to successfully process and poll finalized items for import ID <${importId}>`;
     return { success, error };
   }
   // e. Save as a new asset
-  const saveAssetData = saveNewAsset(importId, assetName, assetDescription);
+  const saveAssetData = await saveNewAsset(importId, assetName, assetDescription);
   if (!saveAssetData) {
     error = `Failed to successfully save the asset <${assetName}> for import ID <${importId}>`;
     return { success, error };
