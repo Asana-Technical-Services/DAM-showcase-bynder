@@ -50,11 +50,14 @@ const handler = async (req, res) => {
   });
 
   // Create AppComponent form metadata
+  const callbackUrl = `${constants.vercelUrl}/api/modal/submit`;
+  console.log(`[DEBUG] Callback url: ${callbackUrl}`);
+  return;
   const form = {
     template: 'form_metadata_v0',
     metadata: {
       title: 'Review new file',
-      on_submit_callback: `${constants.vercelUrl}/api/modal/submit`,
+      on_submit_callback: callbackUrl,
       submit_button_text: 'Submit',
       fields: [
         {
@@ -108,7 +111,6 @@ const handler = async (req, res) => {
       ],
     },
   };
-
   res.status(200).json(form);
 };
 
