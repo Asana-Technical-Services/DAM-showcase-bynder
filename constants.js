@@ -21,7 +21,6 @@ const asanaApiUrl = process.env.ASANA_API_URL;
 const asanaRequestHeaders = {
   Authorization: `Bearer ${asanaKey}`,
   'Content-Type': 'application/json; charset=utf-8',
-  Cookie: 'TooBusyRedirectCount=0',
 };
 
 // Bynder API request header

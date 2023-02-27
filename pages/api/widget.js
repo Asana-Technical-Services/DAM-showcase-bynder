@@ -25,14 +25,16 @@ async function handleBynderAsset(resourceUrl) {
     };
   }
 
-  const { name } = assetData;
-  const { description } = assetData;
-  const { dateModified } = assetData;
-  const { userCreated } = assetData;
-  const { isPublic } = assetData;
-  const { fileSize } = assetData;
-  const { width } = assetData;
-  const { height } = assetData;
+  const {
+    name,
+    description,
+    dateModified,
+    userCreated,
+    isPublic,
+    fileSize,
+    width,
+    height,
+  } = assetData;
 
   const privacyColorText = isPublic ? 'blue' : 'red';
   const privacyText = isPublic ? 'Public' : 'Private';

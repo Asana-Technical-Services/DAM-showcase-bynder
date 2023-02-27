@@ -9,8 +9,7 @@ const constants = require('../../constants');
 async function convertAssetsToList(assets) {
   const assetsList = assets.reduce((result, currentValue) => {
     const iconUrl = currentValue.thumbnails && currentValue.thumbnails.mini;
-    const { name } = currentValue;
-    const { id } = currentValue;
+    const { name, id } = currentValue;
     const data = {
       icon_url: iconUrl,
       title: name,
