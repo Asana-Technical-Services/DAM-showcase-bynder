@@ -1,11 +1,12 @@
+/* eslint-disable no-console */
 /**
  * API for the AppComponent attachment function.
  * Returns an asset url for the desired asset ID.
  */
-/**
- * TODO: if preferred, return final url provided by DAM for specific asset ID
- */
-const handler = (req, res) => {
+const axios = require('axios');
+const constants = require('../../constants');
+
+const handler = async (req, res) => {
   // Check body and return if empty
   const { data } = req.body;
   if (!data) {
@@ -13,13 +14,33 @@ const handler = (req, res) => {
     return;
   }
   // Retrieve item GID
-  const dataParsed = JSON.parse(data);
-  const item = dataParsed && dataParsed.value;
+  let dataParsed;
+  try {
+    dataParsed = JSON.parse(data);
+  } catch (error) {
+    console.log(error);
+    throw new Error(error);
+  }
 
-  // Return resource
+  // Get the Bynder id to generate the asset media link
+  const id = dataParsed && dataParsed.query;
+  const response = await axios.get(`${constants.bynderApiUrl}/v4/media/${id}`, {
+    headers: constants.bynderRequestHeaders,
+  });
+
+  if (!response) {
+    res.status(200).json({
+      error: 'No asset data found',
+    });
+    return;
+  }
+  const name = response.data && response.data.name;
+  const mediaLink = `${constants.bynderUrl}/media?mediaId=${id}`;
+
+  // Return resource to App Component
   const resource = {
-    resource_name: item,
-    resource_url: `https://dam-showcase.vercel.app/dam/asset/${item}`,
+    resource_name: name,
+    resource_url: mediaLink,
   };
   res.status(200).json(resource);
 };
