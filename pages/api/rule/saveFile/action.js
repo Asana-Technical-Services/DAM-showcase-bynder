@@ -38,7 +38,7 @@ const handler = async (req, res) => {
   const attachmentGid = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Attachment GID');
 
   // Return if this isn't an approval task
-  if (!isApprovalTask || !attachmentGid) {
+  if (!isApprovalTask || !assetName || !attachmentGid) {
     res.status(200).json({
       error: 'Missing correct task data for save file',
     });
