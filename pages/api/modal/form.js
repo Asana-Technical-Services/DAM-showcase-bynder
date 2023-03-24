@@ -46,7 +46,7 @@ const handler = async (req, res) => {
   // Get available attachments for the desired task
   const files = await getAttachmentsForTask(taskId).catch((error) => {
     console.log(error);
-    return [];
+    return [{ id: '1', label: '' }];
   });
 
   // Create AppComponent form metadata
