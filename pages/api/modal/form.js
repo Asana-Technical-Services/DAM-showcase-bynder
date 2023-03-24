@@ -29,6 +29,10 @@ async function getAttachmentsForTask(taskGid) {
     });
   });
 
+  // Handle if no attachments, default to ewmpty
+  if (files.length <= 0) {
+    return [{ id: "1", label: "" }];
+  }
   return files;
 }
 
