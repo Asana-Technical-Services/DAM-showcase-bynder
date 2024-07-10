@@ -36,6 +36,8 @@ const handler = async (req, res) => {
   const isApprovalTask = taskData && taskData.resource_subtype === 'approval';
   const assetName = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Name');
   const attachmentGid = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Attachment GID');
+  const tags = taskData && taskData.custom_fields.filter(cf=>!!cf.display_value&&cf.display_value!="").map(cf =>cf.display_value).join(",");
+
 
   // Return if this isn't an approval task
   if (!isApprovalTask || !assetName || !attachmentGid) {
@@ -86,6 +88,7 @@ const handler = async (req, res) => {
     imageData,
     assetName,
     assetDescription,
+    tags
   );
   if (!success) {
     res.status(200).json({ error });

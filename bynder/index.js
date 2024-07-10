@@ -110,12 +110,12 @@ async function pollFinalizedFiles(importId) {
   return finishedProcessing;
 }
 
-async function saveNewAsset(importId, assetName, description) {
+async function saveNewAsset(importId, assetName, description,tags='asana-upload') {
   const params = {
     brandId: 'EC8550AE-87AD-4700-B2E26D459F6933C4', // TODO: handle and get brandID of specific Bynder instance
     name: assetName,
     description,
-    tags: 'asana-upload', // TODO: Implement tag handling from Asana custom fields
+    tags: tags, // TODO: Implement tag handling from Asana custom fields
   };
   const response = await axios.post(
     `${constants.bynderApiUrl}/v4/media/save/${importId}`,
@@ -133,6 +133,7 @@ async function uploadAsset(
   imageData,
   assetName,
   assetDescription,
+  tags='asana-upload'
 ) {
   let success = false;
   let error = '';
@@ -166,7 +167,7 @@ async function uploadAsset(
     return { success, error };
   }
   // e. Save as a new asset
-  const saveAssetData = await saveNewAsset(importId, assetName, assetDescription);
+  const saveAssetData = await saveNewAsset(importId, assetName, assetDescription,tags);
   if (!saveAssetData) {
     error = `Failed to successfully save the asset <${assetName}> for import ID <${importId}>`;
     return { success, error };
