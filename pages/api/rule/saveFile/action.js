@@ -2,7 +2,6 @@
 /**
  * API for the AppComponent triggered rule action.
  */
-export const maxDuration = 30; // This function can run for a maximum of 30 seconds
 const axios = require('axios');
 const constants = require('../../../../constants');
 const asanaUtils = require('../../../../utils/asana');
