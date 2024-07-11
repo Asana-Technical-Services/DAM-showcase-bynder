@@ -8,7 +8,7 @@ const constants = require('../../../../constants');
 const asanaUtils = require('../../../../utils/asana');
 const bynder = require('../../../../bynder');
 
-export async function POST(req, res) {
+const handler = async (req, res) => {
   const { data } = req.body;
   console.log(data)
   if (!data) {
@@ -108,3 +108,5 @@ export async function POST(req, res) {
     ],
   });
 };
+
+module.exports = handler;
