@@ -9,6 +9,7 @@ const bynder = require('../../../../bynder');
 
 const handler = async (req, res) => {
   const { data } = req.body;
+  console.log(data)
   if (!data) {
     res.status(200).json({
       error: 'Missing data in request body',
@@ -30,12 +31,13 @@ const handler = async (req, res) => {
   const asanaConfig = {
     headers: constants.asanaRequestHeaders,
   };
-  const tasksResponse = await axios.get(`${constants.asanaApiUrl}/tasks/${targetObj}? \
-    opt_fields=resource_subtype,custom_fields.name,custom_fields.display_value`, asanaConfig);
+  const tasksResponse = await axios.get(`${constants.asanaApiUrl}/tasks/${targetObj}?opt_fields=resource_subtype,custom_fields.name,custom_fields.display_value`, asanaConfig);
   const taskData = tasksResponse && tasksResponse.data && tasksResponse.data.data;
   const isApprovalTask = taskData && taskData.resource_subtype === 'approval';
   const assetName = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Name');
   const attachmentGid = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Attachment GID');
+  const tags = taskData && taskData.custom_fields.filter(cf=>!!cf.display_value&&cf.display_value!="").map(cf =>cf.display_value).join(",");
+
 
   // Return if this isn't an approval task
   if (!isApprovalTask || !assetName || !attachmentGid) {
@@ -86,6 +88,7 @@ const handler = async (req, res) => {
     imageData,
     assetName,
     assetDescription,
+    tags
   );
   if (!success) {
     res.status(200).json({ error });
