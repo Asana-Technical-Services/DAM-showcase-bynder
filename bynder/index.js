@@ -142,7 +142,7 @@ async function uploadAsset(
   const uploadedChunkData = await uploadChunks(endpointUrl, multipartParams, imageData, assetName);
   if (!uploadedChunkData) {
     error = `Failed to upload chunk data to <${endpointUrl}>`;
-    return { success, error };
+    return { success, error,importId:null  };
   }
   const uploadid = initializedData.s3file && initializedData.s3file.uploadid;
   const targetid = initializedData.s3file && initializedData.s3file.targetid;
@@ -151,29 +151,29 @@ async function uploadAsset(
   const registeredChunkData = await registerUploadedChunks(uploadid, targetid, filename);
   if (!registeredChunkData) {
     error = `Failed to register uploaded chunk data for file <${filename}>`;
-    return { success, error };
+    return { success, error,importId:null  };
   }
   // c. Finalize the completely uploaded file
   const finalizedData = await finalizeUploadedFile(uploadid, targetid, filename, assetName);
   if (!finalizedData) {
     error = `Failed to finalize uploaded file <${filename}>`;
-    return { success, error };
+    return { success, error,importId:null };
   }
   const importId = finalizedData && finalizedData.importId;
   // d. Poll the state of the finalized files
   const finishedProcessing = await pollFinalizedFiles(importId);
   if (!finishedProcessing) {
     error = `Failed to successfully process and poll finalized items for import ID <${importId}>`;
-    return { success, error };
+    return { success, error,importId:null  };
   }
   // e. Save as a new asset
   const saveAssetData = await saveNewAsset(importId, assetName, assetDescription,tags);
   if (!saveAssetData) {
     error = `Failed to successfully save the asset <${assetName}> for import ID <${importId}>`;
-    return { success, error };
+    return { success, error,importId:null };
   }
   success = true;
-  return { success, error };
+  return { success, error, importId };
 }
 
 exports.getUploadEndpoint = getUploadEndpoint;

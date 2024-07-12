@@ -81,7 +81,7 @@ const handler = async (req, res) => {
 
   //   c. Upload the asset
   const assetDescription = asanaUtils.getCustomFieldValueByName(taskData, 'Bynder Asset Description');
-  const { success, error } = await bynder.uploadAsset(
+  const { success, error,importId } = await bynder.uploadAsset(
     endpointUrl,
     initializedData,
     initializedData.multipart_params,
@@ -97,12 +97,10 @@ const handler = async (req, res) => {
 
   res.status(200).json({
     action_result: 'ok',
-    error: 'That resource no longer exists',
     resources_created: [
       {
-        error: 'No resource matched that input',
         resource_name: assetName,
-        resource_url: downloadUrl,
+        resource_url: "https://asanasandbox2.bynder.com/media/?mediaId="+String(importId),
       },
     ],
   });
